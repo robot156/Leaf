@@ -1,6 +1,8 @@
 [versions]
 # Project
 androidGradlePlugin = "9.2.1"
+firebaseCrashlyticsGradlePlugin = "3.0.7"
+googleServices = "4.5.0"
 
 # AndroidX
 androidxCore = "1.19.0"
@@ -19,6 +21,9 @@ kotlinxDatetime = "0.8.0"
 kotlinxImmutable = "0.5.1"
 kotlinxSerializationJson = "1.11.0"
 kotlinxCoroutines = "1.11.0"
+
+# Firebase
+firebaseBom = "34.16.0"
 
 # coreDseugar
 androidDesugarJdkLibs = "2.1.5"
@@ -99,6 +104,10 @@ kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 kotlinx-immutable-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 kotlin-compose-compiler-extension = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" } # For platform
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+
 # Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
@@ -172,6 +181,8 @@ androidx-room = { id = "androidx.room", version.ref = "androidxRoom" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradlePlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 # Convention plugins (build-logic)
 leaf-android-application = { id = "leaf.android.application" }

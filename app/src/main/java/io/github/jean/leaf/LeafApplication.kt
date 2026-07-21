@@ -2,6 +2,7 @@ package io.github.jean.leaf
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.FirebaseApp
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -19,6 +20,11 @@ class LeafApplication :
 
     override val appComponentProviders: MetroAppComponentProviders
         get() = appGraph
+
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)
+    }
 }
 
 val Context.appGraph: AppGraph
