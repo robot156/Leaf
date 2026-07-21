@@ -2,18 +2,18 @@ package io.github.jean.core.ui.mvi
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.OrbitContainer
+import org.orbitmvi.orbit.OrbitContainerHost
 import org.orbitmvi.orbit.syntax.Syntax
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.viewmodel.orbitContainer
 import kotlin.time.Duration.Companion.minutes
 
 abstract class MVIViewModel<STATE : Any, SIDE_EFFECT : Any>(
     initialState: STATE,
 ) : ViewModel(),
-    ContainerHost<STATE, SIDE_EFFECT> {
-    override val container: Container<STATE, SIDE_EFFECT> =
-        container(
+    OrbitContainerHost<STATE, STATE, SIDE_EFFECT> {
+    override val container: OrbitContainer<STATE, STATE, SIDE_EFFECT> =
+        orbitContainer(
             initialState = initialState,
             buildSettings = {
                 exceptionHandler = coroutineExceptionHandler
