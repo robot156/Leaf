@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Leaf</string>
+    <string name="app_desc">읽고, 남기다</string>
+
+    <string name="common_confirm">확인</string>
+    <string name="common_cancel">취소</string>
+
+    <string name="home_empty_title">아직 기록한 책이 없어요</string>
+    <string name="home_empty_desc">지금 읽고 있는 책부터\n한 권 꽂아볼까요?</string>
+    <string name="home_empty_btn">첫 책 추가하기</string>
+
+    <string name="editor_note">기록</string>
+    <string name="editor_new_note">새 기록</string>
+    <string name="editor_save">저장</string>
+    <string name="editor_book_choice">책 선택하기</string>
+    <string name="editor_quote_add">인용 추가</string>
+    <string name="editor_quote_prefix">인용 · p. </string>
+    <string name="editor_quote_placeholder">기억하고 싶은 문장을 옮겨 적어보세요.</string>
+    <string name="editor_record_placeholder">이 책에서 떠오른 생각을 남겨보세요.</string>
+    <string name="editor_char_count">%d자</string>
+
+    <string name="note_detail_title">기록</string>
+    <string name="note_detail_edit">편집</string>
+    <string name="note_detail_delete">삭제</string>
+    <string name="note_detail_cancel">취소</string>
+    <string name="note_detail_page">p. %d</string>
+    <string name="note_detail_recorded_date">%s의 기록</string>
+    <string name="note_detail_book_isbn">ISBN %s</string>
+    <string name="note_detail_book_description">소개</string>
+    <string name="note_detail_book_external_link">알라딘에서 보기</string>
+    <string name="note_detail_delete_dialog_title">노트 삭제</string>
+    <string name="note_detail_delete_dialog_description">해당 기록을 삭제하시겠습니까?</string>
+
+    <string name="search_title">책 선택</string>
+    <string name="search_placeholder">책 제목이나 저자를 검색해보세요</string>
+    <string name="search_book_detail">상세보기</string>
+    <string name="search_action">검색</string>
+    <string name="search_empty_title">검색 결과가 없어요</string>
+    <string name="search_empty_desc">책을 찾지 못했어요.\n다른 키워드로 검색해보세요.</string>
+    <string name="search_start_title">기록할 책을 검색해보세요</string>
+    <string name="search_start_desc">저자 또는 제목으로\n검색 가능합니다</string>
+    <string name="search_detail_isbn">ISBN %s</string>
+    <string name="search_detail_description">소개</string>
+    <string name="search_detail_external_link">알라딘에서 보기</string>
+    <string name="search_detail_select">이 책 선택</string>
+
+    <string name="setting_title">설정</string>
+    <string name="setting_back">뒤로</string>
+    <string name="setting_section_display">화면</string>
+    <string name="setting_section_data">데이터</string>
+    <string name="setting_clear_cache">캐시 삭제</string>
+    <string name="setting_clear_cache_dialog_title">캐시 삭제</string>
+    <string name="setting_clear_cache_dialog_description">앱 캐시를 삭제하시겠습니까?</string>
+    <string name="setting_clear_cache_dialog_cancel">취소</string>
+    <string name="setting_clear_cache_dialog_confirm">삭제</string>
+    <string name="setting_section_info">정보</string>
+    <string name="setting_contact">문의하기</string>
+    <string name="setting_licenses">오픈소스 라이선스</string>
+    <string name="setting_app_version">앱 버전</string>
+
+    <string name="setting_theme">테마</string>
+    <string name="setting_theme_sample_title">Leaf</string>
+    <string name="setting_theme_sample_description">읽고, 남기다</string>
+    <string name="setting_theme_light">라이트</string>
+    <string name="setting_theme_dark">다크</string>
+    <string name="setting_theme_system">시스템 설정</string>
+    <string name="setting_theme_system_follow">시스템</string>
+    <string name="setting_theme_palette_ink_navy">잉크 네이비</string>
+    <string name="setting_theme_palette_forest">포레스트</string>
+    <string name="setting_theme_palette_burgundy">버건디</string>
+    <string name="setting_theme_palette_muk">먹</string>
+    <string name="setting_theme_palette_olive">올리브</string>
+    <string name="setting_theme_palette_terracotta">테라코타</string>
+    <string name="setting_theme_section_brightness">밝기</string>
+
+    <string name="error_title">불러오지 못했어요</string>
+    <string name="error_title_for_footer">목록을 불러오지 못했어요</string>
+    <string name="error_desc">일시적인 문제일 수 있어요.\n잠시 후 다시 시도해 주세요.</string>
+    <string name="error_btn">다시 시도</string>
+
+</resources>

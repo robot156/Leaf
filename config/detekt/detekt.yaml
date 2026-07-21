@@ -1,0 +1,130 @@
+complexity:
+  # 복잡도 계열 규칙 묶음(함수 길이, 클래스 크기, 순환복잡도 등) 설정
+  active: false
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    # GlobalScope.launch/async 사용 검출
+    active: true
+  SuspendFunWithCoroutineScopeReceiver:
+    # CoroutineScope 확장 suspend 함수 정의 금지(호출 컨텍스트 모호성 방지)
+    active: true
+  SuspendFunWithFlowReturnType:
+    # suspend와 Flow를 동시에 쓰는 시그니처 금지(불필요한 중첩 비동기 방지)
+    active: true
+
+empty-blocks:
+  # 비어있는 블록({}) 탐지
+  active: true
+
+exceptions:
+  # 제너럴 예외(Exception) 탐지
+  TooGenericExceptionCaught:
+    active: false
+
+naming:
+  active: true
+  BooleanPropertyNaming:
+    # 불리언 프로퍼티 네이밍 규칙(present-tense 또는 is/has 접두 등) 검사
+    active: true
+  EnumNaming:
+    active: true
+    enumEntryPattern: '^[A-Z][a-zA-Z0-9]*$' # enum 상수 UpperCamelCase 강제
+  FunctionNaming:
+    # 함수명 규칙에서 특정 애노테이션 부착 함수는 검사 제외
+    ignoreAnnotated:
+      - 'Composable' # Compose 함수는 별도 네이밍 정책 적용 시 외부 도구로 처리
+
+performance:
+  # 성능 관련 패턴(불필요한 복사, 스프레드 남용 등) 점검
+  active: true
+
+style:
+  active: true
+  BracesOnIfStatements:
+    # if 본문에 중괄호 사용 정책
+    active: true
+    multiLine: always # 모든 if 분기에 중괄호 요구
+  BracesOnWhenStatements:
+    # when 분기에서 중괄호 사용 정책
+    active: true
+    multiLine: consistent # 여러 줄 분기만 중괄호 요구, 한 줄 분기는 생략 허용
+  CanBeNonNullable:
+    # 항상 null이 아닌 필드를 Nullable로 선언한 경우 감지
+    active: true
+  CascadingCallWrapping:
+    # 체이닝 호출에서 줄바꿈·정렬 정책 검사
+    # ktlint의 체이닝 호출 줄 바꿈 규칙과 충돌하므로 비활성화
+    active: false
+  ClassOrdering:
+    # 클래스 내부 선언 순서(프로퍼티→생성자→메서드→companion 등) 강제
+    active: true
+  DataClassShouldBeImmutable:
+    # data class의 프로퍼티 불변성 요구(val 선호)
+    active: true
+  ExplicitCollectionElementAccessMethod:
+    # get/set 대신 인덱스 접근 연산자 사용 권장 또는 일관성 검사
+    active: true
+  ExpressionBodySyntax:
+    # 단일식 함수에서 expression body(=) 사용 권장
+    active: true
+  MagicNumber:
+    # 리터럴 숫자 하드코딩 사용 감지(상수화 유도)
+    active: false
+  MaxLineLength:
+    # 한 줄 최대 길이 제한
+    active: true
+    maxLineLength: 140
+  ReturnCount:
+    # 함수 내 return 문 수 제한
+    active: false
+  ThrowsCount:
+    # 함수 내 throw 문 수 제한
+    active: false
+  ForbiddenComment:
+    # TODO/FIXME 등 특정 주석 패턴 사용 제어
+    active: false
+  UseEmptyCounterpart:
+    # 빈 컬렉션/시퀀스에 대해 emptyList()/emptyMap() 등 사용 권장
+    active: true
+  MandatoryBracesLoops:
+    # for/while 등 루프 본문 중괄호 요구
+    active: true
+  UnusedPrivateMember:
+    # 사용되지 않는 private 멤버 탐지
+    active: true
+    ignoreAnnotated:
+      - 'RelaxedMockK' # MockK 주석 대상은 사용 여부 무시
+      - 'InjectMockKs'
+      - 'Preview'      # Compose Preview 함수/프로퍼티는 사용 여부 무시
+      - 'PreviewLightDark'
+      - 'ThemePreviews'
+
+potential-bugs:
+  # 널 안정성, 잘못된 equals/hashCode, 중복 when 분기 등 잠재 버그 탐지
+  active: true
+
+formatting:
+  active: true
+  autoCorrect: true # 포맷팅 자동 수정 실행(ktlint 규칙 위임)
+  MaximumLineLength:
+    # 포맷팅 관점의 최대 줄 길이
+    active: true
+    maxLineLength: 140
+  TrailingCommaOnDeclarationSite:
+    # 선언부 마지막 요소 뒤의 트레일링 콤마 사용 정책
+    active: true
+  TrailingCommaOnCallSite:
+    # 호출부 마지막 인자 뒤의 트레일링 콤마 사용 정책
+    active: true
+  Indentation:
+    # 일관된 들여쓰기 관리
+    # ktlint의 들여쓰기 규칙과 충돌하므로 비활성화
+    active: false
+  ArgumentListWrapping:
+    # 전달인자의 각 라인 최대 길이
+    maxLineLength: 140
+  ParameterListWrapping:
+    # 매개변수의 각 라인 최대 길이
+    maxLineLength: 140

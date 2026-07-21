@@ -1,0 +1,15 @@
+{
+  "uniqueId": "com.orioncactus:pretendard",
+  "artifactVersion": "font",
+  "name": "Pretendard",
+  "website": "https://github.com/orioncactus/pretendard",
+  "developers": [
+    {
+      "name": "Kil Hyung-jin"
+    }
+  ],
+  "licenses": [
+    "OFL-1.1"
+  ],
+  "tag": "font"
+}

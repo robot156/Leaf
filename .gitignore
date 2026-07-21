@@ -1,0 +1,58 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle
+.gradle/
+build/
+/captures
+.externalNativeBuild
+.cxx
+
+# Local configuration (machine-specific, keep out of VCS)
+local.properties
+
+# Log / temp files
+*.log
+*.tmp
+*.hprof
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+.navigation/
+
+# Keystore / signing — never commit these
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# NDK
+obj/
+
+# Kotlin
+.kotlin/
+
+# macOS
+.DS_Store
+
+# Secrets / service config
+secrets.properties
+google-services.json

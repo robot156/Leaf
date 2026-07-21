@@ -1,0 +1,189 @@
+[versions]
+# Project
+androidGradlePlugin = "9.2.1"
+
+# AndroidX
+androidxCore = "1.19.0"
+androidxCoreSplashscreen = "1.2.0"
+androidxLifecycle = "2.11.0"
+androidxActivity = "1.13.0"
+androidxComposeBom = "2026.06.01"
+androidxNavigation3 = "1.1.4"
+androidxRoom = "2.8.4"
+androidxDatastore = "1.2.1"
+
+# kotlin
+kotlin = "2.4.10"
+ksp = "2.3.9"
+kotlinxDatetime = "0.8.0"
+kotlinxImmutable = "0.5.1"
+kotlinxSerializationJson = "1.11.0"
+kotlinxCoroutines = "1.11.0"
+
+# coreDseugar
+androidDesugarJdkLibs = "2.1.5"
+
+# DI
+metro = "1.3.2"
+
+# ImageLoader
+coil = "3.5.0"
+
+# Network
+ktor = "3.5.1"
+
+# Convention
+detekt = "1.23.8"
+detektComposeRule = "0.6.3"
+
+# MVI
+orbit = "12.0.0"
+
+# ETC
+jetbrainsKotlinJvm = "2.4.10"
+aboutlibraries = "15.0.4"
+
+[libraries]
+# AndroidX
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
+
+# AndroidX Compose
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+# AndroidX Activity Compose
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+
+# AndroidX Lifecycle
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewModel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidxLifecycle" }
+androidx-lifecycle-savedState = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
+
+# AndroidX Navigation3
+androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "androidxNavigation3" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "androidxNavigation3" }
+
+# AndroidX Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
+
+# AndroidX DataStore
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
+
+# Android ETC
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" } # coreLibraryDesugaring
+
+# Metro
+metrox-viewmodel = { group = "dev.zacsweers.metro", name = "metrox-viewmodel", version.ref = "metro" }
+metrox-viewmodel-compose = { group = "dev.zacsweers.metro", name = "metrox-viewmodel-compose", version.ref = "metro" }
+metrox-android = { group = "dev.zacsweers.metro", name = "metrox-android", version.ref = "metro" }
+
+# Coil
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
+
+# KotlinX
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-immutable-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+kotlin-compose-compiler-extension = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
+# Ktor
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+
+# Orbit MVI
+orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbit" }
+orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbit" }
+orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }
+
+# ETC
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
+
+# Convention (Gradle plugin artifacts referenced by build-logic convention plugins)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidxRoom" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-compose-rule = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRule" }
+detekt-gradle-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+
+[bundles]
+di = [
+    "metrox-viewmodel",
+    "metrox-viewmodel-compose",
+    "metrox-android",
+]
+coil = [
+    "coil-compose",
+    "coil-network-ktor3",
+]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-serialization-kotlinx-json",
+    "ktor-client-logging",
+]
+mvi = [
+    "orbit-core",
+    "orbit-viewmodel",
+    "orbit-compose",
+]
+androidx-navigation3 = [
+    "androidx-navigation3-runtime",
+    "androidx-navigation3-ui",
+]
+androidx-room = [
+    "androidx-room-runtime",
+    "androidx-room-ktx",
+]
+androidx-lifecycle = [
+    "androidx-lifecycle-runtime-compose",
+    "androidx-lifecycle-viewModel-compose",
+    "androidx-lifecycle-viewmodel-navigation3",
+    "androidx-lifecycle-savedState"
+]
+detekt = [
+    "detekt-formatting",
+    "detekt-compose-rule",
+    "detekt-gradle-plugin"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-room = { id = "androidx.room", version.ref = "androidxRoom" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+
+# Convention plugins (build-logic)
+leaf-android-application = { id = "leaf.android.application" }
+leaf-android-application-compose = { id = "leaf.android.application.compose" }
+leaf-android-library = { id = "leaf.android.library" }
+leaf-android-library-compose = { id = "leaf.android.library.compose" }
+leaf-android-feature = { id = "leaf.android.feature" }
+leaf-room = { id = "leaf.room" }
+leaf-metro = { id = "leaf.metro" }
+leaf-detekt = { id = "leaf.detekt" }
+leaf-jvm = { id = "leaf.jvm.library" }
+leaf-module-generator = { id = "leaf.module.generator" }
+
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

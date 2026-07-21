@@ -1,0 +1,26 @@
+package __PACKAGE__
+
+import androidx.lifecycle.ViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import io.github.jean.core.ui.mvi.Intent
+import io.github.jean.core.ui.mvi.MVIViewModel
+import __PACKAGE__.model.__MODULE_NAME_UPPER_CAMEL_CASE__Intent
+import __PACKAGE__.model.__MODULE_NAME_UPPER_CAMEL_CASE__SideEffect
+import __PACKAGE__.model.__MODULE_NAME_UPPER_CAMEL_CASE__State
+
+@Inject
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
+class __MODULE_NAME_UPPER_CAMEL_CASE__ViewModel : MVIViewModel<__MODULE_NAME_UPPER_CAMEL_CASE__State, __MODULE_NAME_UPPER_CAMEL_CASE__SideEffect>(__MODULE_NAME_UPPER_CAMEL_CASE__State()) {
+
+    override fun onIntent(intent: Intent) {
+        if (intent !is __MODULE_NAME_UPPER_CAMEL_CASE__Intent) {
+            super.onIntent(intent)
+            return
+        }
+    }
+}

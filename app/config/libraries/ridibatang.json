@@ -1,0 +1,15 @@
+{
+  "uniqueId": "com.ridicorp:ridibatang",
+  "artifactVersion": "font",
+  "name": "리디바탕",
+  "website": "https://ridicorp.com/ridibatang",
+  "developers": [
+    {
+      "name": "RIDI Corporation"
+    }
+  ],
+  "licenses": [
+    "OFL-1.1"
+  ],
+  "tag": "font"
+}
