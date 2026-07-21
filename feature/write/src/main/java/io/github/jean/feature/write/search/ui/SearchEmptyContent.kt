@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.jean.core.designsystem.R
 import io.github.jean.core.designsystem.ThemePreviews
-import io.github.jean.core.designsystem.component.LeafImage
 import io.github.jean.core.designsystem.component.LeafMark
 import io.github.jean.core.designsystem.theme.LeafTheme
 
@@ -43,7 +42,7 @@ fun SearchEmptyContent(
 
         LeafMark(
             iconSize = 56.dp,
-            alpha = 0.35f
+            alpha = 0.35f,
         )
 
         Text(
