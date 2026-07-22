@@ -14,4 +14,5 @@ data class NoteDetailState(
     val blocks: ImmutableList<NoteDetailBlockUiModel> = persistentListOf(),
     val isShowBookDetailDialog: Boolean = false,
     val isShowEditDialog: Boolean = false,
+    val isShared: Boolean = false,
 )

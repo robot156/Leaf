@@ -1,5 +1,6 @@
 package io.github.jean.feature.note.detail.model
 
+import androidx.compose.ui.graphics.ImageBitmap
 import io.github.jean.core.ui.mvi.Intent
 
 sealed interface NoteDetailIntent : Intent {
@@ -8,6 +9,12 @@ sealed interface NoteDetailIntent : Intent {
     data object EditClick : NoteDetailIntent
 
     data object DeleteClick : NoteDetailIntent
+
+    data object ShareClick : NoteDetailIntent
+
+    data class RecordShare(
+        val bitmap: ImageBitmap,
+    ) : NoteDetailIntent
 
     data object DeleteConfirmClick : NoteDetailIntent
 

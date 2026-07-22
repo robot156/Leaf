@@ -67,6 +67,15 @@ class NoteDetailViewModel(
                     reduce { state.copy(isShowEditDialog = true) }
                 }
 
+                is NoteDetailIntent.ShareClick -> {
+                    reduce { state.copy(isShared = true) }
+                }
+
+                is NoteDetailIntent.RecordShare -> {
+                    reduce { state.copy(isShared = false) }
+                    postSideEffect(NoteDetailSideEffect.NavigateToShareRecord(intent.bitmap))
+                }
+
                 is NoteDetailIntent.DeleteConfirmClick -> {
                     reduce { state.copy(isShowEditDialog = false) }
                     noteRepository.deleteNote(noteId)

@@ -1,17 +1,27 @@
 package io.github.jean.feature.note.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
@@ -40,6 +50,7 @@ fun NoteDetailRoute(
     navigateToBack: () -> Unit,
     navigateToEditor: (noteId: Long) -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
+    navigateToExternalApp: (bitmap: ImageBitmap) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NoteDetailViewModel =
         assistedMetroViewModel<NoteDetailViewModel, NoteDetailViewModel.Factory> {
@@ -61,6 +72,10 @@ fun NoteDetailRoute(
             is NoteDetailSideEffect.NavigateToExternalWeb -> {
                 navigateToExternalWeb(effect.link)
             }
+
+            is NoteDetailSideEffect.NavigateToShareRecord -> {
+                navigateToExternalApp(effect.bitmap)
+            }
         }
     }
 
@@ -77,72 +92,57 @@ private fun NoteDetailScreen(
     onIntent: (NoteDetailIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Box(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(LeafTheme.colors.surface)
-                .systemBarsPadding(),
+                .background(LeafTheme.colors.surface),
     ) {
-        LeafTopNavigation(
-            title = stringResource(R.string.note_detail_title),
-            leading =
-                LeafTopNavItem.Icon(
-                    iconRes = LeafTheme.res.chevronLeft,
-                    onClick = { onIntent(NoteDetailIntent.BackClick) },
-                ),
-            trailing =
-                persistentListOf(
-                    LeafTopNavItem.TextButton(
-                        text = stringResource(R.string.note_detail_delete),
-                        onClick = { onIntent(NoteDetailIntent.DeleteClick) },
-                    ),
-                    LeafTopNavItem.TextButton(
-                        text = stringResource(R.string.note_detail_edit),
-                        onClick = { onIntent(NoteDetailIntent.EditClick) },
-                    ),
-                ),
-        )
-
-        NoteDetailBookHeader(
-            title = state.book.title,
-            author = state.book.author,
-            coverUrl = state.book.coverUrl,
-            recordedDateText = stringResource(R.string.note_detail_recorded_date, state.recordedDate),
-            onClick = { onIntent(NoteDetailIntent.BookHeaderClick) },
-        )
-
         Column(
             modifier =
                 Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 22.dp, vertical = 20.dp),
+                    .fillMaxSize()
+                    .systemBarsPadding(),
         ) {
-            state.blocks.forEach { block ->
-                when (block) {
-                    is NoteDetailBlockUiModel.Quote -> {
-                        NoteDetailQuoteBlock(
-                            page = block.page,
-                            sentence = block.sentence,
-                            modifier = Modifier.padding(bottom = 18.dp),
-                        )
-                    }
+            LeafTopNavigation(
+                title = stringResource(R.string.note_detail_title),
+                leading =
+                    LeafTopNavItem.Icon(
+                        iconRes = LeafTheme.res.chevronLeft,
+                        onClick = { onIntent(NoteDetailIntent.BackClick) },
+                    ),
+                trailing =
+                    persistentListOf(
+                        LeafTopNavItem.TextButton(
+                            text = stringResource(R.string.note_detail_delete),
+                            onClick = { onIntent(NoteDetailIntent.DeleteClick) },
+                        ),
+                        LeafTopNavItem.TextButton(
+                            text = stringResource(R.string.note_detail_share),
+                            onClick = { onIntent(NoteDetailIntent.ShareClick) },
+                        ),
+                        LeafTopNavItem.TextButton(
+                            text = stringResource(R.string.note_detail_edit),
+                            onClick = { onIntent(NoteDetailIntent.EditClick) },
+                        ),
+                    ),
+            )
 
-                    is NoteDetailBlockUiModel.Record -> {
-                        Text(
-                            modifier =
-                                modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 18.dp),
-                            text = block.content,
-                            style = LeafTheme.typography.note,
-                            color = LeafTheme.colors.textPrimary,
-                        )
-                    }
-                }
-            }
+            NoteDetailContent(
+                state = state,
+                onBookHeaderClick = { onIntent(NoteDetailIntent.BookHeaderClick) },
+                scrollable = true,
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        if (state.isShared) {
+            NoteDetailShareCapture(
+                state = state,
+                onCaptured = { bitmap ->
+                    onIntent(NoteDetailIntent.RecordShare(bitmap))
+                },
+            )
         }
     }
 
@@ -169,6 +169,102 @@ private fun NoteDetailScreen(
                     onClick = { onIntent(NoteDetailIntent.DeleteConfirmClick) },
                 ),
         )
+    }
+}
+
+@Composable
+private fun NoteDetailContent(
+    state: NoteDetailState,
+    onBookHeaderClick: () -> Unit,
+    scrollable: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        NoteDetailBookHeader(
+            modifier = Modifier.padding(top = 24.dp),
+            title = state.book.title,
+            author = state.book.author,
+            coverUrl = state.book.coverUrl,
+            recordedDateText = stringResource(R.string.note_detail_recorded_date, state.recordedDate),
+            onClick = onBookHeaderClick,
+        )
+
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .then(
+                        // 표시용은 남는 높이에 맞춰 스크롤, 캡처용은 전체 높이로 wrap 되도록 둘을 분기한다.
+                        if (scrollable) {
+                            Modifier
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                        } else {
+                            Modifier
+                        },
+                    ).padding(horizontal = 22.dp, vertical = 20.dp),
+        ) {
+            state.blocks.forEach { block ->
+                when (block) {
+                    is NoteDetailBlockUiModel.Quote -> {
+                        NoteDetailQuoteBlock(
+                            page = block.page,
+                            sentence = block.sentence,
+                            modifier = Modifier.padding(bottom = 18.dp),
+                        )
+                    }
+
+                    is NoteDetailBlockUiModel.Record -> {
+                        Text(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 18.dp),
+                            text = block.content,
+                            style = LeafTheme.typography.note,
+                            color = LeafTheme.colors.textPrimary,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NoteDetailShareCapture(
+    state: NoteDetailState,
+    onCaptured: (ImageBitmap) -> Unit,
+) {
+    val captureLayer = rememberGraphicsLayer()
+    val surfaceColor = LeafTheme.colors.surface
+    var recorded by remember { mutableStateOf(false) }
+    val hasSignaled = remember { booleanArrayOf(false) }
+
+    NoteDetailContent(
+        state = state,
+        onBookHeaderClick = {},
+        scrollable = false,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(align = Alignment.Top, unbounded = true)
+                .drawWithContent {
+                    captureLayer.record {
+                        drawRect(surfaceColor)
+                        this@drawWithContent.drawContent()
+                    }
+                    if (!hasSignaled[0]) {
+                        hasSignaled[0] = true
+                        recorded = true
+                    }
+                },
+    )
+
+    LaunchedEffect(recorded) {
+        if (recorded) {
+            onCaptured(captureLayer.toImageBitmap())
+        }
     }
 }
 

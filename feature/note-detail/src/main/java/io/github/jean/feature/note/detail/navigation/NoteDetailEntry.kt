@@ -1,5 +1,6 @@
 package io.github.jean.feature.note.detail.navigation
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.ui.NavDisplay
@@ -10,6 +11,7 @@ fun EntryProviderScope<NavKey>.noteDetailEntry(
     navigateToBack: () -> Unit,
     navigateToEditor: (noteId: Long) -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
+    navigateToExternalApp: (bitmap: ImageBitmap) -> Unit,
 ) {
     entry<NoteDetailRoute>(metadata = NavDisplay.coverSlideTransition()) { route ->
         NoteDetailRoute(
@@ -17,6 +19,7 @@ fun EntryProviderScope<NavKey>.noteDetailEntry(
             navigateToBack = navigateToBack,
             navigateToEditor = navigateToEditor,
             navigateToExternalWeb = navigateToExternalWeb,
+            navigateToExternalApp = navigateToExternalApp,
         )
     }
 }

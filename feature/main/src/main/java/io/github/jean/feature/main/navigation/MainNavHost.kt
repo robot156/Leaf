@@ -3,11 +3,16 @@ package io.github.jean.feature.main.navigation
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -33,6 +38,8 @@ import io.github.jean.feature.write.navigation.EditorRoute
 import io.github.jean.feature.write.navigation.SearchRoute
 import io.github.jean.feature.write.navigation.editorEntry
 import io.github.jean.feature.write.navigation.searchEntry
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 internal fun MainNavHost(modifier: Modifier = Modifier) {
@@ -76,6 +83,7 @@ internal fun MainNavHost(modifier: Modifier = Modifier) {
                         navigateToBack = { navigator.back() },
                         navigateToEditor = { noteId -> navigator.navigate(EditorRoute(noteId)) },
                         navigateToExternalWeb = { link -> navigateToExternalWeb(context, link) },
+                        navigateToExternalApp = { bitmap -> navigateToExternalApp(context, bitmap) },
                     )
 
                     settingEntry(
@@ -150,4 +158,35 @@ private fun sendContactMail(
     } catch (_: ActivityNotFoundException) {
         Toast.makeText(context, "메일 앱을 찾을 수 없어요", Toast.LENGTH_SHORT).show()
     }
+}
+
+private fun navigateToExternalApp(
+    context: Context,
+    bitmap: ImageBitmap,
+) {
+    try {
+        val file = File(bitmap.saveToDisk(context))
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+        ShareCompat
+            .IntentBuilder(context)
+            .setStream(uri)
+            .setType("image/png")
+            .startChooser()
+    } catch (_: Exception) {
+        Toast.makeText(context, "공유할 앱을 찾을 수 없어요", Toast.LENGTH_SHORT).show()
+    }
+}
+
+private fun ImageBitmap.saveToDisk(context: Context): String {
+    val fileName = "shared_image_${System.currentTimeMillis()}.png"
+    val cachePath = File(context.cacheDir, "images").also { it.mkdirs() }
+    val file = File(cachePath, fileName)
+    val outputStream = FileOutputStream(file)
+
+    asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    outputStream.flush()
+    outputStream.close()
+
+    return file.absolutePath
 }

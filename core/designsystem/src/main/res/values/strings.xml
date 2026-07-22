@@ -22,6 +22,7 @@
 
     <string name="note_detail_title">기록</string>
     <string name="note_detail_edit">편집</string>
+    <string name="note_detail_share">공유</string>
     <string name="note_detail_delete">삭제</string>
     <string name="note_detail_cancel">취소</string>
     <string name="note_detail_page">p. %d</string>
