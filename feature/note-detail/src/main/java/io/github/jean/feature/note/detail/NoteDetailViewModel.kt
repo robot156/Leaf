@@ -93,6 +93,11 @@ class NoteDetailViewModel(
                     reduce { state.copy(isShowBookDetailDialog = false) }
                 }
 
+                is NoteDetailIntent.BookCoverImageClick -> {
+                    reduce { state.copy(isShowBookDetailDialog = false) }
+                    postSideEffect(NoteDetailSideEffect.NavigateToImageViewer(intent.imageUrl))
+                }
+
                 is NoteDetailIntent.ExternalWebSiteClick -> {
                     postSideEffect(NoteDetailSideEffect.NavigateToExternalWeb(intent.webLink))
                 }

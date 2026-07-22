@@ -25,11 +25,13 @@ fun EntryProviderScope<NavKey>.editorEntry(
 fun EntryProviderScope<NavKey>.searchEntry(
     navigateToBack: () -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
+    navigateToImageViewer: (imageUrl: String) -> Unit,
 ) {
     entry<SearchRoute>(metadata = NavDisplay.coverSlideTransition()) {
         SearchRoute(
             navigateToBack = navigateToBack,
             navigateToExternalWeb = navigateToExternalWeb,
+            navigateToImageViewer = navigateToImageViewer,
         )
     }
 }

@@ -53,6 +53,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun SearchRoute(
     navigateToBack: () -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
+    navigateToImageViewer: (imageUrl: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = metroViewModel(),
 ) {
@@ -66,6 +67,10 @@ fun SearchRoute(
 
             is SearchSideEffect.NavigateToExternalWeb -> {
                 navigateToExternalWeb(sideEffect.link)
+            }
+
+            is SearchSideEffect.NavigateToImageViewer -> {
+                navigateToImageViewer(sideEffect.imageUrl)
             }
         }
     }

@@ -24,6 +24,7 @@ import io.github.jean.core.designsystem.component.LeafImage
 import io.github.jean.core.designsystem.component.LeafSolidButton
 import io.github.jean.core.designsystem.modifier.border
 import io.github.jean.core.designsystem.modifier.clip
+import io.github.jean.core.designsystem.modifier.throttleClickable
 import io.github.jean.core.designsystem.theme.LeafTheme
 import io.github.jean.feature.note.detail.model.NoteDetailIntent
 import io.github.jean.feature.note.detail.model.section.NoteDetailBookUiModel
@@ -52,7 +53,16 @@ fun NoteDetailBookDetailBottomSheet(
                             .width(96.dp)
                             .height(140.dp)
                             .clip(8.dp)
-                            .border(width = 0.5.dp, color = LeafTheme.colors.border, radius = 8.dp),
+                            .border(width = 0.5.dp, color = LeafTheme.colors.border, radius = 8.dp)
+                            .then(
+                                if (uiModel.coverUrl.isNotBlank()) {
+                                    Modifier.throttleClickable {
+                                        onIntent(NoteDetailIntent.BookCoverImageClick(uiModel.coverUrl))
+                                    }
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     model = uiModel.coverUrl,
                     scale = ContentScale.Crop,
                 )

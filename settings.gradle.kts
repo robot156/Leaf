@@ -44,4 +44,5 @@ include(":feature:note-detail")
 include(":feature:setting")
 include(":feature:setting-theme")
 include(":feature:setting-license")
+include(":feature:image-viewer")
 

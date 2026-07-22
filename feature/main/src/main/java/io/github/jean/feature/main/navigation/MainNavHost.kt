@@ -22,6 +22,8 @@ import io.github.jean.core.ui.navigation.LocalNavigator
 import io.github.jean.core.ui.navigation.rememberNavigator
 import io.github.jean.feature.home.navigation.HomeRoute
 import io.github.jean.feature.home.navigation.homeEntry
+import io.github.jean.feature.imageviewer.navigation.ImageViewerRoute
+import io.github.jean.feature.imageviewer.navigation.imageViewerEntry
 import io.github.jean.feature.intro.navigation.IntroRoute
 import io.github.jean.feature.intro.navigation.introEntry
 import io.github.jean.feature.note.detail.navigation.NoteDetailRoute
@@ -77,6 +79,7 @@ internal fun MainNavHost(modifier: Modifier = Modifier) {
                     searchEntry(
                         navigateToBack = { navigator.back() },
                         navigateToExternalWeb = { link -> navigateToExternalWeb(context, link) },
+                        navigateToImageViewer = { imageUrl -> navigator.navigate(ImageViewerRoute(imageUrl)) },
                     )
 
                     noteDetailEntry(
@@ -84,6 +87,7 @@ internal fun MainNavHost(modifier: Modifier = Modifier) {
                         navigateToEditor = { noteId -> navigator.navigate(EditorRoute(noteId)) },
                         navigateToExternalWeb = { link -> navigateToExternalWeb(context, link) },
                         navigateToExternalApp = { bitmap -> navigateToExternalApp(context, bitmap) },
+                        navigateToImageViewer = { imageUrl -> navigator.navigate(ImageViewerRoute(imageUrl)) },
                     )
 
                     settingEntry(
@@ -110,6 +114,10 @@ internal fun MainNavHost(modifier: Modifier = Modifier) {
                     )
 
                     settingLicenseDetailEntry(
+                        navigateToBack = { navigator.back() },
+                    )
+
+                    imageViewerEntry(
                         navigateToBack = { navigator.back() },
                     )
                 },

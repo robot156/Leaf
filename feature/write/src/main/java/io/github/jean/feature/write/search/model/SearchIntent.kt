@@ -22,6 +22,10 @@ sealed interface SearchIntent : Intent {
 
     data object BookDetailDialogHide : SearchIntent
 
+    data class BookCoverImageClick(
+        val imageUrl: String,
+    ) : SearchIntent
+
     data class ExternalWebSiteClick(
         val webLink: String,
     ) : SearchIntent

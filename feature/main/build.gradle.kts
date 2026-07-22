@@ -14,6 +14,7 @@ dependencies {
     implementation(projects.feature.setting)
     implementation(projects.feature.settingTheme)
     implementation(projects.feature.settingLicense)
+    implementation(projects.feature.imageViewer)
 
     implementation(libs.androidx.core.splashscreen)
 }

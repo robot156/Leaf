@@ -68,6 +68,11 @@ class SearchViewModel(
                     setDetailBookShow(isShow = false)
                 }
 
+                is SearchIntent.BookCoverImageClick -> {
+                    reduce { state.copy(isShowBookDetailDialog = false, selectedBook = null) }
+                    postSideEffect(SearchSideEffect.NavigateToImageViewer(intent.imageUrl))
+                }
+
                 is SearchIntent.ExternalWebSiteClick -> {
                     postSideEffect(SearchSideEffect.NavigateToExternalWeb(intent.webLink))
                 }

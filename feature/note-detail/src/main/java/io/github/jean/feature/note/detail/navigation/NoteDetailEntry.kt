@@ -12,6 +12,7 @@ fun EntryProviderScope<NavKey>.noteDetailEntry(
     navigateToEditor: (noteId: Long) -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
     navigateToExternalApp: (bitmap: ImageBitmap) -> Unit,
+    navigateToImageViewer: (imageUrl: String) -> Unit,
 ) {
     entry<NoteDetailRoute>(metadata = NavDisplay.coverSlideTransition()) { route ->
         NoteDetailRoute(
@@ -20,6 +21,7 @@ fun EntryProviderScope<NavKey>.noteDetailEntry(
             navigateToEditor = navigateToEditor,
             navigateToExternalWeb = navigateToExternalWeb,
             navigateToExternalApp = navigateToExternalApp,
+            navigateToImageViewer = navigateToImageViewer,
         )
     }
 }

@@ -13,6 +13,10 @@ sealed interface NoteDetailSideEffect {
         val link: String,
     ) : NoteDetailSideEffect
 
+    data class NavigateToImageViewer(
+        val imageUrl: String,
+    ) : NoteDetailSideEffect
+
     data class NavigateToShareRecord(
         val bitmap: ImageBitmap,
     ) : NoteDetailSideEffect

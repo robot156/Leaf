@@ -47,6 +47,7 @@ orbit = "12.0.0"
 # ETC
 jetbrainsKotlinJvm = "2.4.10"
 aboutlibraries = "15.0.4"
+zoomable = "2.13.0"
 
 [libraries]
 # AndroidX
@@ -122,6 +123,7 @@ orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref =
 
 # ETC
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
+image-zoomable = { module ="net.engawapg.lib:zoomable", version.ref ="zoomable" }
 
 # Convention (Gradle plugin artifacts referenced by build-logic convention plugins)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }

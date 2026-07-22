@@ -51,6 +51,7 @@ fun NoteDetailRoute(
     navigateToEditor: (noteId: Long) -> Unit,
     navigateToExternalWeb: (link: String) -> Unit,
     navigateToExternalApp: (bitmap: ImageBitmap) -> Unit,
+    navigateToImageViewer: (imageUrl: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NoteDetailViewModel =
         assistedMetroViewModel<NoteDetailViewModel, NoteDetailViewModel.Factory> {
@@ -75,6 +76,10 @@ fun NoteDetailRoute(
 
             is NoteDetailSideEffect.NavigateToShareRecord -> {
                 navigateToExternalApp(effect.bitmap)
+            }
+
+            is NoteDetailSideEffect.NavigateToImageViewer -> {
+                navigateToImageViewer(effect.imageUrl)
             }
         }
     }

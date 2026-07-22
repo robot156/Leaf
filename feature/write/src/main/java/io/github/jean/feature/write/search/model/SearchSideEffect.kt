@@ -6,4 +6,8 @@ sealed interface SearchSideEffect {
     data class NavigateToExternalWeb(
         val link: String,
     ) : SearchSideEffect
+
+    data class NavigateToImageViewer(
+        val imageUrl: String,
+    ) : SearchSideEffect
 }

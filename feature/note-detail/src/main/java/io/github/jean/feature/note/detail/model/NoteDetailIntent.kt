@@ -26,6 +26,10 @@ sealed interface NoteDetailIntent : Intent {
 
     data object BookDetailDialogHide : NoteDetailIntent
 
+    data class BookCoverImageClick(
+        val imageUrl: String,
+    ) : NoteDetailIntent
+
     data class ExternalWebSiteClick(
         val webLink: String,
     ) : NoteDetailIntent
