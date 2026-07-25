@@ -12,30 +12,30 @@ Leaf는 읽고 있는 책을 검색해 등록하고 독서 노트를 만드는 �
 ## 모듈 구조
 ```
 Leaf
-├── app                      # Application, DI 그래프 루트, Firebase
-├── build-logic/convention   # Gradle 컨벤션 플러그인
-├── config                   # Detekt 설정, 커스텀 라이선스 고지
+├── app                      # Application, DI Graph
+├── build-logic/convention   # Gradle Plugin
+├── config                   # Detekt
 ├── core
-│   ├── common               # 도메인 모델 · EventBus · 시간 유틸 (순수 JVM)
-│   ├── designsystem         # LeafTheme · 팔레트 · Leaf* 컴포넌트 · Modifier
-│   ├── ui                   # MVIViewModel · Navigator · 페이징 · 애니메이션
-│   ├── data                 # Repository (Note · Book · Setting)
-│   │   ├── api              #   └ Repository 인터페이스 (feature가 보는 유일한 계약)
-│   │   └── impl             #   └ RepositoryImpl · AndroidEnvironment
-│   ├── data-local           # Room · DataStore · 이미지 캐시
-│   │   ├── api              #   └ LocalDataSource · PreferenceStorage 인터페이스
-│   │   └── impl             #   └ Room(Entity · Dao) · DataStore · DataSourceImpl
-│   └── data-remote          # Ktor · DTO · 응답 매퍼
-│       ├── api              #   └ RemoteDataSource 인터페이스 (도메인 모델만 노출)
-│       └── impl             #   └ Ktor 클라이언트 · DTO · 응답 매퍼
+│   ├── common               # Model · EventBus · Util
+│   ├── designsystem         # LeafTheme · Leaf Component · Modifier
+│   ├── ui                   # MVIViewModel · Navigator · Paging · Animation
+│   ├── data                 
+│   │   ├── api              #   Repository
+│   │   └── impl             #   └ RepositoryImpl
+│   ├── data-local           
+│   │   ├── api              #   LocalData
+│   │   └── impl             #   └ Room(Entity · Dao) · DataStore
+│   └── data-remote          
+│       ├── api              #   RemoteDataSource
+│       └── impl             #   └ Ktor · DTO
 └── feature
-    ├── main                 # MainActivity · MainNavHost · 테마 적용
+    ├── main                 # MainActivity · MainNavHost
     ├── intro                # 스플래시 / 최초 진입
     ├── home                 # 기록 목록
-    ├── write                # 책 검색(search) + 블록 에디터(editor)
+    ├── write                # 책 검색 · 노트 작성
     ├── note-detail          # 기록 상세 · 이미지 공유
-    ├── setting              # 설정 홈
-    ├── setting-theme        # 테마 · 팔레트
-    ├── setting-license      # 오픈소스 라이선스 목록/상세
-    └── image-viewer         # 줌 가능한 이미지 뷰어
+    ├── setting              # 설정
+    ├── setting-theme        # 설정 테마 · 팔레트
+    ├── setting-license      # 설정 오픈소스 라이선스 목록/상세
+    └── image-viewer         # 이미지 뷰어
 ```
