@@ -23,10 +23,7 @@ object DatabaseBindings {
                 context = context,
                 klass = LeafDatabase::class.java,
                 name = LeafDatabase.NAME,
-            )
-            // 초기 개발 단계 — 스키마 변경 시 마이그레이션 대신 재생성한다.
-            .fallbackToDestructiveMigration(dropAllTables = true)
-            .build()
+            ).build()
 
     @Provides
     fun provideBookDao(database: LeafDatabase): BookDao = database.bookDao()
