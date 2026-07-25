@@ -24,7 +24,6 @@ import io.github.jean.feature.write.editor.model.EditorSideEffect
 import io.github.jean.feature.write.editor.model.EditorState
 import io.github.jean.feature.write.editor.model.section.EditorBlock
 import io.github.jean.feature.write.editor.model.section.toEditorBlock
-import io.github.jean.feature.write.editor.model.section.toNoteContent
 import io.github.jean.feature.write.editor.model.section.toUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
@@ -53,8 +52,15 @@ class EditorViewModel(
     }
 
     override suspend fun Syntax<EditorState, EditorSideEffect>.onContainerCreate() {
-        if (noteId == null) return
+        if (noteId != null) {
+            loadNote(noteId)
+        }
 
+        // 진입 시점의 내용을 기준으로 잡아두고 이후 변경 여부(뒤로가기 경고) 판단에 쓴다.
+        reduce { state.copy(initialSnapshot = state.snapshot) }
+    }
+
+    private suspend fun Syntax<EditorState, EditorSideEffect>.loadNote(noteId: Long) {
         val (note, book) = noteRepository.getNoteWithBook(noteId)
         val items =
             note
@@ -90,7 +96,21 @@ class EditorViewModel(
         intent {
             when (intent) {
                 is EditorIntent.BackClick -> {
+                    // 저장하지 않은 내용이 있으면 바로 나가지 않고 경고 팝업을 먼저 띄운다.
+                    if (state.hasUnsavedChanges) {
+                        reduce { state.copy(isShowExitDialog = true) }
+                    } else {
+                        postSideEffect(EditorSideEffect.NavigateToBack)
+                    }
+                }
+
+                is EditorIntent.ExitConfirmClick -> {
+                    reduce { state.copy(isShowExitDialog = false) }
                     postSideEffect(EditorSideEffect.NavigateToBack)
+                }
+
+                is EditorIntent.ExitDialogDismiss -> {
+                    reduce { state.copy(isShowExitDialog = false) }
                 }
 
                 is EditorIntent.SaveClick -> {
@@ -146,13 +166,7 @@ class EditorViewModel(
         intent {
             val bookId = state.book?.bookId ?: return@intent
 
-            val recordBlock =
-                EditorBlock.Record(
-                    id = EditorState.RECORD_BLOCK_ID,
-                    content = state.recordState.text.toString(),
-                )
-            // 화면 순서와 동일하게 인용들 뒤에 본문을 붙인다. 빈 블록은 매퍼가 걸러낸다.
-            val content = (state.quotes + recordBlock).toNoteContent()
+            val content = state.noteContent
 
             val currentNoteId = state.noteId
             val note =

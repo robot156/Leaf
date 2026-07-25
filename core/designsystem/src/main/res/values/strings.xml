@@ -19,6 +19,10 @@
     <string name="editor_quote_placeholder">기억하고 싶은 문장을 옮겨 적어보세요.</string>
     <string name="editor_record_placeholder">이 책에서 떠오른 생각을 남겨보세요.</string>
     <string name="editor_char_count">%d자</string>
+    <string name="editor_exit_dialog_title">작성을 그만둘까요?</string>
+    <string name="editor_exit_dialog_description">화면을 나가면 지금 작성한 내용은 저장되지 않고 사라져요.</string>
+    <string name="editor_exit_dialog_confirm">나가기</string>
+    <string name="editor_exit_dialog_cancel">계속 작성</string>
 
     <string name="note_detail_title">기록</string>
     <string name="note_detail_edit">편집</string>

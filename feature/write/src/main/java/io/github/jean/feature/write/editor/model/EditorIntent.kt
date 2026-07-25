@@ -33,4 +33,8 @@ sealed interface EditorIntent : Intent {
     ) : EditorIntent
 
     data object DatePickerDialogDismiss : EditorIntent
+
+    data object ExitConfirmClick : EditorIntent
+
+    data object ExitDialogDismiss : EditorIntent
 }

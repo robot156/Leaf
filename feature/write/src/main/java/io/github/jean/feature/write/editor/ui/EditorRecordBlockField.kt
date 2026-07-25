@@ -21,8 +21,8 @@ fun EditorRecordBlockField(
     showPlaceholder: Boolean,
     requestFocus: Boolean,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
-    val focusRequester = remember { FocusRequester() }
     LaunchedEffect(requestFocus) {
         if (requestFocus) focusRequester.requestFocus()
     }

@@ -1,6 +1,9 @@
 package io.github.jean.feature.write.editor
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,21 +14,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.placeCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import io.github.jean.core.designsystem.R
 import io.github.jean.core.designsystem.ThemePreviews
+import io.github.jean.core.designsystem.component.LeafAlertDialog
 import io.github.jean.core.designsystem.component.LeafChip
 import io.github.jean.core.designsystem.component.LeafDatePickerDialog
 import io.github.jean.core.designsystem.component.LeafOutlinedButton
 import io.github.jean.core.designsystem.component.LeafTopNavigation
+import io.github.jean.core.designsystem.component.node.LeafDialogButton
 import io.github.jean.core.designsystem.component.node.LeafTopNavItem
 import io.github.jean.core.designsystem.theme.LeafTheme
 import io.github.jean.feature.write.editor.model.EditorIntent
@@ -68,6 +76,10 @@ fun EditorRoute(
         }
     }
 
+    BackHandler(enabled = state.hasUnsavedChanges) {
+        viewModel.onIntent(EditorIntent.BackClick)
+    }
+
     EditorScreen(
         state = state,
         onIntent = viewModel::onIntent,
@@ -81,6 +93,8 @@ private fun EditorScreen(
     onIntent: (EditorIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val recordFocusRequester = remember { FocusRequester() }
+
     Scaffold(
         modifier =
             modifier
@@ -141,6 +155,13 @@ private fun EditorScreen(
                         Modifier
                             .weight(1f)
                             .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                recordFocusRequester.requestFocus()
+                                state.recordState.edit { placeCursorAtEnd() }
+                            }
                             .verticalScroll(rememberScrollState())
                             .padding(vertical = 14.dp),
                 ) {
@@ -158,6 +179,7 @@ private fun EditorScreen(
                         state = state.recordState,
                         showPlaceholder = state.quotes.isEmpty(),
                         requestFocus = state.focusedBlockId == EditorState.RECORD_BLOCK_ID,
+                        focusRequester = recordFocusRequester,
                     )
                 }
             }
@@ -175,6 +197,24 @@ private fun EditorScreen(
             initialDate = state.noteDate,
             onConfirm = { onIntent(EditorIntent.DatePickerConfirm(it)) },
             onDismiss = { onIntent(EditorIntent.DatePickerDialogDismiss) },
+        )
+    }
+
+    if (state.isShowExitDialog) {
+        LeafAlertDialog(
+            onDismiss = { onIntent(EditorIntent.ExitDialogDismiss) },
+            title = stringResource(R.string.editor_exit_dialog_title),
+            description = stringResource(R.string.editor_exit_dialog_description),
+            negativeButton =
+                LeafDialogButton(
+                    text = stringResource(R.string.editor_exit_dialog_cancel),
+                    onClick = { onIntent(EditorIntent.ExitDialogDismiss) },
+                ),
+            positiveButton =
+                LeafDialogButton(
+                    text = stringResource(R.string.editor_exit_dialog_confirm),
+                    onClick = { onIntent(EditorIntent.ExitConfirmClick) },
+                ),
         )
     }
 }
