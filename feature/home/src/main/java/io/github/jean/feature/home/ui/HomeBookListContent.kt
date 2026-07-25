@@ -28,7 +28,13 @@ fun HomeBookListContent(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
-            contentPadding = PaddingValues(20.dp),
+            contentPadding =
+                PaddingValues(
+                    top = 20.dp,
+                    start = 20.dp,
+                    end = 20.dp,
+                    bottom = 160.dp,
+                ),
         ) {
             items(
                 items = bookNotes,

@@ -30,11 +30,14 @@ rootProject.name = "Leaf"
 
 include(":app")
 include(":core:designsystem")
-include(":core:data")
 include(":core:common")
-include(":core:data-local")
-include(":core:data-remote")
 include(":core:ui")
+include(":core:data:api")
+include(":core:data:impl")
+include(":core:data-local:api")
+include(":core:data-local:impl")
+include(":core:data-remote:api")
+include(":core:data-remote:impl")
 
 include(":feature:main")
 include(":feature:intro")
@@ -45,4 +48,3 @@ include(":feature:setting")
 include(":feature:setting-theme")
 include(":feature:setting-license")
 include(":feature:image-viewer")
-

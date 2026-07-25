@@ -57,10 +57,11 @@ aboutLibraries {
 
 dependencies {
     implementation(projects.core.common)
-    implementation(projects.core.data)
-    implementation(projects.core.dataLocal)
-    implementation(projects.core.dataRemote)
     implementation(projects.core.designsystem)
+
+    implementation(projects.core.data.impl)
+    implementation(projects.core.dataLocal.impl)
+    implementation(projects.core.dataRemote.impl)
 
     implementation(projects.feature.main)
     implementation(projects.feature.intro)

@@ -15,7 +15,8 @@ internal class AndroidFeatureConventionPlugin : Plugin<Project> {
             apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
             dependencies {
-                implementation(project(":core:data"))
+                // feature는 Repository 계약만 본다. 구현체(:core:data:impl)는 classpath에 없다.
+                implementation(project(":core:data:api"))
                 implementation(project(":core:common"))
                 implementation(project(":core:designsystem"))
                 implementation(project(":core:ui"))

@@ -20,8 +20,14 @@ Leaf
 │   ├── designsystem         # LeafTheme · 팔레트 · Leaf* 컴포넌트 · Modifier
 │   ├── ui                   # MVIViewModel · Navigator · 페이징 · 애니메이션
 │   ├── data                 # Repository (Note · Book · Setting)
+│   │   ├── api              #   └ Repository 인터페이스 (feature가 보는 유일한 계약)
+│   │   └── impl             #   └ RepositoryImpl · AndroidEnvironment
 │   ├── data-local           # Room · DataStore · 이미지 캐시
+│   │   ├── api              #   └ LocalDataSource · PreferenceStorage 인터페이스
+│   │   └── impl             #   └ Room(Entity · Dao) · DataStore · DataSourceImpl
 │   └── data-remote          # Ktor · DTO · 응답 매퍼
+│       ├── api              #   └ RemoteDataSource 인터페이스 (도메인 모델만 노출)
+│       └── impl             #   └ Ktor 클라이언트 · DTO · 응답 매퍼
 └── feature
     ├── main                 # MainActivity · MainNavHost · 테마 적용
     ├── intro                # 스플래시 / 최초 진입
