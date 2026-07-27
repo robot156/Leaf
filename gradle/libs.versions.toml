@@ -19,7 +19,6 @@ androidxDatastore = "1.2.1"
 composeMultiplatform = "1.11.1"      # org.jetbrains.compose.{runtime,ui,foundation,animation,components}
 composeMaterial3 = "1.11.0-alpha07"  # org.jetbrains.compose.material3 — 버전 라인 다름
 jbNavigation3 = "1.1.1"              # org.jetbrains.androidx.navigation3:navigation3-ui (runtime 은 upstream 사용)
-androidxSqlite = "2.7.0"             # androidx.sqlite:sqlite-bundled — room 과 버전 라인 다름
 
 # kotlin
 kotlin = "2.4.10"
