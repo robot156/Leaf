@@ -12,6 +12,7 @@ androidxActivity = "1.13.0"
 androidxComposeBom = "2026.06.01"
 androidxNavigation3 = "1.1.4"
 androidxRoom = "2.8.4"
+androidxSqlite = "2.7.0"             # androidx.sqlite — room 과 버전 라인이 다르다 (2.8.x 없음)
 androidxDatastore = "1.2.1"
 
 # Compose Multiplatform
@@ -87,6 +88,8 @@ androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
+# KMP 에서는 프레임워크 SQLite 대신 번들 드라이버를 쓴다. room-ktx 는 iOS 미퍼블리시라 제외.
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidxSqlite" }
 
 # AndroidX DataStore
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }

@@ -1,7 +1,9 @@
 package io.github.jean.core.datalocal.database
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import io.github.jean.core.datalocal.database.converter.InstantConverter
 import io.github.jean.core.datalocal.database.converter.LongListConverter
@@ -42,6 +44,7 @@ import io.github.jean.core.datalocal.database.entity.BookSearchCacheEntity
     NoteContentConverter::class,
     LongListConverter::class,
 )
+@ConstructedBy(LeafDatabaseConstructor::class)
 abstract class LeafDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
 
@@ -52,4 +55,13 @@ abstract class LeafDatabase : RoomDatabase() {
     companion object {
         const val NAME = "leaf.db"
     }
+}
+
+/**
+ * KMP 에서는 Room 이 리플렉션으로 생성 구현체를 찾을 수 없어, 생성자를 명시적으로 연결해야 한다.
+ * `actual` 은 각 타깃의 Room KSP 가 만들어 주므로 여기서는 `expect` 만 선언한다.
+ */
+@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_IR_INCOMPATIBILITY")
+expect object LeafDatabaseConstructor : RoomDatabaseConstructor<LeafDatabase> {
+    override fun initialize(): LeafDatabase
 }

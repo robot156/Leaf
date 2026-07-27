@@ -1,30 +1,28 @@
 package io.github.jean.core.datalocal.datasource.license
 
-import android.content.Context
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
+import io.github.jean.core.common.coroutines.ioDispatcher
 import io.github.jean.core.common.model.License
 import io.github.jean.core.common.model.LicenseInfo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.mikepenz.aboutlibraries.util.withContext as withAndroidContext
 
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class LicenseDataSourceImpl(
-    private val context: Context,
+/**
+ * aboutlibraries 의 생성 데이터를 읽는 방법이 플랫폼마다 다르다.
+ * Android 는 `res/raw/aboutlibraries.json`, iOS 는 아직 리소스 파이프라인이 없다.
+ * 도메인 매핑만 공통으로 두고 로딩은 플랫폼에 위임한다.
+ */
+internal fun interface LibsLoader {
+    suspend fun load(): Libs
+}
+
+internal class LicenseDataSourceImpl(
+    private val libsLoader: LibsLoader,
 ) : LicenseDataSource {
     override suspend fun getLicenses(): List<License> =
-        withContext(Dispatchers.IO) {
-            Libs
-                .Builder()
-                .withAndroidContext(context)
-                .build()
+        withContext(ioDispatcher) {
+            libsLoader
+                .load()
                 .libraries
                 .map(Library::toDomain)
         }

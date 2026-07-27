@@ -112,8 +112,8 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 0 | 빌드 인프라 | `leaf.kmp.library` convention plugin, `configureKotlinMultiplatform`, `libs.versions.toml` 좌표 추가 | ✅ 완료 |
 | 1 | `core:common` + `*/api` | KMP 전환 (순수 Kotlin 계층) | ✅ 완료 |
 | 2 | `core:data-remote:impl` | Ktor 엔진 자동 탐색, `HtmlText` 순수 Kotlin 재작성 + 테스트 | ✅ 완료 |
-| 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ⬜ 다음 |
-| 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ⬜ |
+| 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ✅ 완료 |
+| 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ⬜ 다음 |
 | 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ⬜ |
 | 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ |
 | 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ |
@@ -135,6 +135,18 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 - **AndroidManifest 위치**: KMP android 타깃은 `src/androidMain/AndroidManifest.xml`.
 - **테스트 실행 경로**: android 타깃에 `withHostTest {}` 를 켜서 `commonTest` 를
   `testAndroidHostTest`(JVM) 로 돌린다. iOS 테스트는 링킹이 필요해 Xcode 없이는 못 돌린다.
+- **`iosX64` 타깃은 넣지 않는다**: `coil3`, `aboutlibraries-core`,
+  `androidx.sqlite:sqlite-bundled` 가 `ios_x64` 를 퍼블리시하지 않아 의존성 해석이 깨진다.
+  Intel Mac 시뮬레이터용이라 Apple Silicon 에서는 실행도 안 되므로 실익이 없다.
+  → 타깃은 `iosArm64` + `iosSimulatorArm64` 둘만.
+- **`Dispatchers.IO` 는 commonMain 에서 못 쓴다**: kotlinx-coroutines 가 `concurrent`
+  소스셋에만 선언한다. 게다가 Kotlin/Native 에서는 아직 `internal` 이라 iosMain 에서도 참조 불가.
+  → `core:common` 의 `expect val ioDispatcher` 로 추상화 (Android=`Dispatchers.IO`, iOS=`Dispatchers.Default`).
+- **DI 그래프에 서드파티 타입을 키로 노출하지 않는다**: 그래프를 생성하는 app 모듈이
+  그 타입을 해석하지 못한다(기존 `PreferenceStorageImpl` 주석에 있던 제약).
+  → 플랫폼별 생성이 필요한 것은 androidMain/iosMain 의 binding container 가
+  **api 계층 인터페이스**(`PreferenceStorage`, `LicenseDataSource`, …)로 제공하고,
+  로직은 commonMain 에 둔다. `DataStore<Preferences>`·`RoomDatabase.Builder` 는 그래프에 등장하지 않는다.
 
 ---
 

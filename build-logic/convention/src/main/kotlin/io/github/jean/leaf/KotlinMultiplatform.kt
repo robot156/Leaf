@@ -33,7 +33,9 @@ internal fun Project.configureKotlinMultiplatform() {
             }
         }
 
-        iosX64()
+        // iosX64(Intel Mac 시뮬레이터)는 넣지 않는다.
+        // coil3, aboutlibraries-core, androidx.sqlite:sqlite-bundled 가 ios_x64 를 퍼블리시하지
+        // 않아서 의존성 해석이 깨진다. Apple Silicon 에서는 실행도 안 되므로 실익이 없다.
         iosArm64()
         iosSimulatorArm64()
 

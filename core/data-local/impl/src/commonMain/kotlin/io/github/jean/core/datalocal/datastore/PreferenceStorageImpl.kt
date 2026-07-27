@@ -1,29 +1,23 @@
 package io.github.jean.core.datalocal.datastore
 
-import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 import io.github.jean.core.common.model.LeafPalette
 import io.github.jean.core.common.model.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// DataStore<Preferences>를 DI 그래프의 바인딩 키로 노출하면 상위 모듈(app)에서
-// datastore 타입을 해석하지 못한다. Context만 주입받아 저장소를 이 클래스가 소유한다.
-private val Context.preferenceDataStore by preferencesDataStore(name = "leaf_preferences")
-
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class PreferenceStorageImpl(
-    context: Context,
+/**
+ * DataStore 인스턴스는 플랫폼마다 파일 경로를 얻는 방법이 달라
+ * androidMain / iosMain 의 binding container 가 만들어 넘긴다.
+ * `DataStore<Preferences>` 를 DI 키로 노출하지 않는 이유는
+ * [io.github.jean.core.datalocal.di.DatabaseBindings] 의 주석 참고.
+ */
+internal class PreferenceStorageImpl(
+    private val dataStore: DataStore<Preferences>,
 ) : PreferenceStorage {
-    private val dataStore = context.preferenceDataStore
     override val theme: Flow<Theme> =
         dataStore.data.map { preferences ->
             preferences[KEY_THEME].toEnumOrDefault(Theme.System)
@@ -55,3 +49,12 @@ class PreferenceStorageImpl(
         val KEY_PALETTE = stringPreferencesKey("palette")
     }
 }
+
+/**
+ * DataStore 파일 이름.
+ *
+ * Android 는 기존 `preferencesDataStore(name = "leaf_preferences")` 가 쓰던 경로
+ * (`filesDir/datastore/leaf_preferences.preferences_pb`)를 그대로 유지해야 한다.
+ * 이름이 바뀌면 기존 사용자의 테마·팔레트 설정이 초기화된다.
+ */
+internal const val PREFERENCES_NAME = "leaf_preferences"
