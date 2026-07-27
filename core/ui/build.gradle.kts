@@ -29,6 +29,8 @@ kotlin {
             // MaskBox 의 Android 구현이 View 캡처(createBitmap/applyCanvas)와
             // ValueAnimator 의 addListener 확장을 쓴다.
             implementation(libs.androidx.core.ktx)
+            // LeafBackHandler 의 Android 구현이 activity-compose 의 BackHandler 를 쓴다.
+            implementation(libs.androidx.activity.compose)
         }
     }
 }

@@ -1,11 +1,9 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "io.github.jean.feature.settinglicense"
-    resourcePrefix = "setting_license_"
-}
-
-dependencies {
+kotlin {
+    android {
+        namespace = "io.github.jean.feature.settinglicense"
+    }
 }

@@ -1,11 +1,9 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "io.github.jean.feature.note.detail"
-    resourcePrefix = "note_detail_"
-}
-
-dependencies {
+kotlin {
+    android {
+        namespace = "io.github.jean.feature.note.detail"
+    }
 }

@@ -164,6 +164,11 @@ di = [
     "metrox-viewmodel-compose",
     "metrox-android",
 ]
+# metrox-android 는 Android 전용이라 KMP commonMain 에서 쓸 수 없다.
+di-kmp = [
+    "metrox-viewmodel",
+    "metrox-viewmodel-compose",
+]
 coil = [
     "coil-compose",
     "coil-network-ktor3",
@@ -227,6 +232,7 @@ leaf-detekt = { id = "leaf.detekt" }
 leaf-jvm = { id = "leaf.jvm.library" }
 leaf-kmp-library = { id = "leaf.kmp.library" }
 leaf-kmp-library-compose = { id = "leaf.kmp.library.compose" }
+leaf-kmp-feature = { id = "leaf.kmp.feature" }
 leaf-module-generator = { id = "leaf.module.generator" }
 
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

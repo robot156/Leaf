@@ -1,11 +1,9 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "io.github.jean.feature.settingtheme"
-    resourcePrefix = "setting_theme_"
-}
-
-dependencies {
+kotlin {
+    android {
+        namespace = "io.github.jean.feature.settingtheme"
+    }
 }

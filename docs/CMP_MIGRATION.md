@@ -116,7 +116,7 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ✅ 완료 |
 | 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ✅ 완료 |
 | 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ✅ 완료 |
-| 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ 다음 |
+| 7 | `feature/*` (9개) | 전 모듈 KMP 전환, `R.string` 76곳 → compose-resources, 플랫폼 액션 분리 | ✅ 완료 |
 | 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
 | 9 | 정리 | `templates/feature-module` 갱신, README 모듈 구조 갱신 | ⬜ |
 
@@ -198,6 +198,27 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
   캡처가 늦으면 이미 바뀐 새 화면을 찍어 효과가 무의미해진다.
   → 검증된 Android 구현을 그대로 두고, iOS 는 애니메이션 없이 즉시 전환(TODO).
 - **`androidx.lifecycle.ViewModel`, orbit-mvi 는 무수정**으로 commonMain 에서 동작한다.
+
+### 7단계에서 확정된 사항 (feature 9개)
+
+- **`BackHandler`(activity-compose)는 Android 전용.** 공용 대체는
+  `androidx.navigationevent.compose.NavigationBackHandler` 인데 `NavigationEventState` 를
+  hoist 해야 한다. `core:ui` 의 `LeafBackHandler` expect/actual 로 한 번만 감쌌다
+  (Android 는 검증된 activity-compose 구현 유지).
+- **`metrox-android` 는 Android 전용**이라 `di` 번들을 commonMain 용 `di-kmp` 로 분리했다.
+  `MainActivity` 의 `@ActivityKey` 등록 때문에 `feature:main` 의 androidMain 에는 필요하다.
+- **`resourcePrefix` 는 Android 리소스 DSL** — feature 에 Android res 가 없어져서 전부 제거했다.
+- **`feature:main` 만 `androidResources.enable = true`** 가 필요하다
+  (`MainActivity` 와 스플래시 테마를 선언하는 매니페스트 때문).
+- **앱 밖으로 나가는 동작은 `PlatformActions` 로 모았다** (링크 열기 · 문의 메일 · 이미지 공유).
+  `@Composable expect fun rememberPlatformActions()` — Android 구현은 `LocalContext` 가
+  필요해 컴포지션 안에서만 만들 수 있다.
+  iOS 는 링크·메일은 `UIApplication.openURL` 로 동작하고,
+  **이미지 공유는 `UIActivityViewController` 표시에 루트 `UIViewController` 참조가 필요해 8단계로 미뤘다.**
+- **6단계에서 미룬 Route 등록 회귀 테스트를 붙였다.** `feature:main` 이 KMP 가 되어
+  commonTest 를 쓸 수 있게 됐다. 등록을 하나 지우면 실제로 실패하는지까지 확인했다.
+- **detekt autoCorrect 는 한 번에 다 못 고친다.** 모듈 단위로 수정하고 그 회차는 실패로
+  끝내므로, 위반이 여러 모듈에 걸쳐 있으면 `./gradlew detekt` 를 여러 번 돌려야 수렴한다.
 
 - **DI 그래프에 서드파티 타입을 키로 노출하지 않는다**: 그래프를 생성하는 app 모듈이
   그 타입을 해석하지 못한다(기존 `PreferenceStorageImpl` 주석에 있던 제약).

@@ -59,6 +59,10 @@ gradlePlugin {
             id = "leaf.kmp.library.compose"
             implementationClass = "KmpLibraryComposeConventionPlugin"
         }
+        register("kmpFeature") {
+            id = "leaf.kmp.feature"
+            implementationClass = "KmpFeatureConventionPlugin"
+        }
         register("moduleGenerator") {
             id = "leaf.module.generator"
             implementationClass = "ModuleGeneratorPlugin"
