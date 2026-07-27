@@ -18,7 +18,7 @@
     <string name="editor_quote_prefix">인용 · p. </string>
     <string name="editor_quote_placeholder">기억하고 싶은 문장을 옮겨 적어보세요.</string>
     <string name="editor_record_placeholder">이 책에서 떠오른 생각을 남겨보세요.</string>
-    <string name="editor_char_count">%d자</string>
+    <string name="editor_char_count">%1$d자</string>
     <string name="editor_exit_dialog_title">작성을 그만둘까요?</string>
     <string name="editor_exit_dialog_description">화면을 나가면 지금 작성한 내용은 저장되지 않고 사라져요.</string>
     <string name="editor_exit_dialog_confirm">나가기</string>
@@ -29,9 +29,9 @@
     <string name="note_detail_share">공유</string>
     <string name="note_detail_delete">삭제</string>
     <string name="note_detail_cancel">취소</string>
-    <string name="note_detail_page">p. %d</string>
-    <string name="note_detail_recorded_date">%s의 기록</string>
-    <string name="note_detail_book_isbn">ISBN %s</string>
+    <string name="note_detail_page">p. %1$d</string>
+    <string name="note_detail_recorded_date">%1$s의 기록</string>
+    <string name="note_detail_book_isbn">ISBN %1$s</string>
     <string name="note_detail_book_description">소개</string>
     <string name="note_detail_book_external_link">알라딘에서 보기</string>
     <string name="note_detail_delete_dialog_title">노트 삭제</string>
@@ -45,7 +45,7 @@
     <string name="search_empty_desc">책을 찾지 못했어요.\n다른 키워드로 검색해보세요.</string>
     <string name="search_start_title">기록할 책을 검색해보세요</string>
     <string name="search_start_desc">저자 또는 제목으로\n검색 가능합니다</string>
-    <string name="search_detail_isbn">ISBN %s</string>
+    <string name="search_detail_isbn">ISBN %1$s</string>
     <string name="search_detail_description">소개</string>
     <string name="search_detail_external_link">알라딘에서 보기</string>
     <string name="search_detail_select">이 책 선택</string>

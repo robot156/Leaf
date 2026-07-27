@@ -37,6 +37,39 @@ kotlin {
     }
 }
 
+/**
+ * compose-resources 는 `%1${'$'}d` 처럼 **인덱스가 붙은** 형식 지정자만 치환한다
+ * (`SimpleStringFormatRegex = %(\d+)\$[ds]`).
+ *
+ * 맨 `%d`/`%s` 는 예외도 경고도 없이 그대로 화면에 노출된다.
+ * Android 의 `R.string` 은 `String.format` 을 타서 동작했기 때문에 놓치기 쉽다.
+ */
+val checkStringFormatArgs by tasks.registering {
+    val stringsFile = layout.projectDirectory.file("src/commonMain/composeResources/values/strings.xml")
+    inputs.file(stringsFile)
+    outputs.upToDateWhen { true }
+
+    doLast {
+        val offenders =
+            Regex("""<string name="([^"]+)">(.*?)</string>""", RegexOption.DOT_MATCHES_ALL)
+                .findAll(stringsFile.asFile.readText())
+                .filter { Regex("""(?<!%\d{1,2}\$)%[ds]""").containsMatchIn(it.groupValues[2]) }
+                .map { it.groupValues[1] }
+                .toList()
+
+        require(offenders.isEmpty()) {
+            buildString {
+                appendLine("인덱스가 없는 형식 지정자를 쓴 문자열이 있습니다: $offenders")
+                appendLine("compose-resources 는 %1\$d / %1\$s 형태만 치환합니다.")
+                append("맨 %d, %s 는 치환되지 않고 화면에 그대로 노출됩니다.")
+            }
+        }
+    }
+}
+
+tasks.named("check") { dependsOn(checkStringFormatArgs) }
+tasks.named("assemble") { dependsOn(checkStringFormatArgs) }
+
 compose.resources {
     // core:ui 와 feature 모듈들이 Res 를 참조하므로 internal 기본값을 public 으로 바꾼다.
     publicResClass = true

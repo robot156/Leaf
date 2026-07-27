@@ -69,8 +69,16 @@ private class IosPlatformActions : PlatformActions {
         presenter.presentViewController(activityViewController, animated = true, completion = null)
     }
 
+    /**
+     * `openURL(_:)`(인자 하나짜리)은 iOS 10 부터 deprecated 이고 최신 iOS 에서는 아무 일도 하지 않는다.
+     * 반드시 `openURL:options:completionHandler:` 를 써야 한다.
+     */
     private fun open(url: NSURL) {
-        UIApplication.sharedApplication.openURL(url)
+        UIApplication.sharedApplication.openURL(
+            url = url,
+            options = emptyMap<Any?, Any>(),
+            completionHandler = null,
+        )
     }
 }
 
