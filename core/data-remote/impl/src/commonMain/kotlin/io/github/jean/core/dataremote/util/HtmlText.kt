@@ -63,13 +63,14 @@ private fun String.decodeHtmlEntities(): String =
 private fun Int.codePointToString(): String =
     when (this) {
         in 0..0xFFFF -> toChar().toString()
-        in 0x10000..0x10FFFF -> {
-            val offset = this - 0x10000
-            charArrayOf(
-                (0xD800 + (offset shr 10)).toChar(),
-                (0xDC00 + (offset and 0x3FF)).toChar(),
-            ).concatToString()
-        }
-
+        in 0x10000..0x10FFFF -> toSurrogatePair()
         else -> ""
     }
+
+private fun Int.toSurrogatePair(): String {
+    val offset = this - 0x10000
+    return charArrayOf(
+        (0xD800 + (offset shr 10)).toChar(),
+        (0xDC00 + (offset and 0x3FF)).toChar(),
+    ).concatToString()
+}

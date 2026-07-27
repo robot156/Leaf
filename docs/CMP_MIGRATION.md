@@ -113,8 +113,8 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 1 | `core:common` + `*/api` | KMP 전환 (순수 Kotlin 계층) | ✅ 완료 |
 | 2 | `core:data-remote:impl` | Ktor 엔진 자동 탐색, `HtmlText` 순수 Kotlin 재작성 + 테스트 | ✅ 완료 |
 | 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ✅ 완료 |
-| 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ⬜ 다음 |
-| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ⬜ |
+| 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ✅ 완료 |
+| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ⬜ 다음 |
 | 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ |
 | 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ |
 | 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
@@ -142,6 +142,13 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 - **`Dispatchers.IO` 는 commonMain 에서 못 쓴다**: kotlinx-coroutines 가 `concurrent`
   소스셋에만 선언한다. 게다가 Kotlin/Native 에서는 아직 `internal` 이라 iosMain 에서도 참조 불가.
   → `core:common` 의 `expect val ioDispatcher` 로 추상화 (Android=`Dispatchers.IO`, iOS=`Dispatchers.Default`).
+- **KMP android 라이브러리 타깃에는 `buildConfig` 도 빌드 타입도 없다**(단일 variant).
+  `BuildConfig.DEBUG` / `buildConfigField` 를 쓸 수 없다.
+  → 빌드 시점 상수(API_URL·API_KEY·VERSION_NAME)는 `generateLeafBuildConfig` 태스크가
+  commonMain 소스로 생성하고, 빌드 타입에 따라 갈리는 `isDebug` 는 진입점(app)이
+  `BuildFlags` 로 그래프에 주입한다. 라이브러리 모듈에서는 variant 를 알 방법이 없다.
+- **detekt 는 매 단계 전체(`./gradlew detekt`)로 돌린다.** 모듈 단위로만 돌리면
+  다른 모듈에 남은 위반을 놓친다 (2단계의 `BracesOnWhenStatements` 를 4단계에서 발견).
 - **DI 그래프에 서드파티 타입을 키로 노출하지 않는다**: 그래프를 생성하는 app 모듈이
   그 타입을 해석하지 못한다(기존 `PreferenceStorageImpl` 주석에 있던 제약).
   → 플랫폼별 생성이 필요한 것은 androidMain/iosMain 의 binding container 가
