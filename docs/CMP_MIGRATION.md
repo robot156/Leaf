@@ -107,18 +107,74 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 
 각 단계 종료 시 `./gradlew assembleDebug` 통과 + 커밋.
 
-| # | 단계 | 내용 |
-|---|---|---|
-| 0 | 빌드 인프라 | `leaf.kmp.library` / `.compose` / `.feature` / `.application` convention plugin 신설, `configureKotlinMultiplatform`, `LeafBuildConfig` 생성 태스크, `libs.versions.toml` 좌표 추가 |
-| 1 | `core:common` | KMP 전환 (순수 Kotlin 계층) |
-| 2 | `core:data-remote` api/impl | Ktor darwin 엔진, `HtmlText` expect/actual |
-| 3 | `core:data-local` api/impl | Room KMP + `sqlite-bundled`, DataStore okio, license/image expect/actual |
-| 4 | `core:data` api/impl | `Environment` expect/actual + `LeafBuildConfig` |
-| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 |
-| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox |
-| 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main |
-| 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` |
-| 9 | 정리 | detekt KMP 소스셋, `templates/feature-module` 갱신, README 모듈 구조 갱신 |
+| # | 단계 | 내용 | 상태 |
+|---|---|---|---|
+| 0 | 빌드 인프라 | `leaf.kmp.library` convention plugin, `configureKotlinMultiplatform`, `libs.versions.toml` 좌표 추가 | ✅ 완료 |
+| 1 | `core:common` + `*/api` | KMP 전환 (순수 Kotlin 계층) | ✅ 완료 |
+| 2 | `core:data-remote:impl` | Ktor 엔진 자동 탐색, `HtmlText` 순수 Kotlin 재작성 + 테스트 | ✅ 완료 |
+| 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ⬜ 다음 |
+| 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ⬜ |
+| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ⬜ |
+| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ |
+| 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ |
+| 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
+| 9 | 정리 | `templates/feature-module` 갱신, README 모듈 구조 갱신 | ⬜ |
+
+### 0-2 단계에서 확정된 사항
+
+- **AGP 9.2.1 의 KMP Android DSL**: `kotlin { androidLibrary {} }` 는 deprecated.
+  `kotlin { android {} }` 를 쓴다. `compileSdk`/`minSdk` 는 convention plugin 이
+  `targets.withType<KotlinMultiplatformAndroidLibraryTarget>().configureEach` 로 채우고,
+  `namespace` 만 각 모듈이 지정한다.
+- **JVM 모듈은 KMP 모듈을 소비할 수 없다**: `leaf.jvm.library` 모듈은
+  `platform.type=jvm` 변형을 요구하는데 KMP 모듈은 android/native 만 낸다.
+  `core:common` 을 전환하는 순간 `core/*/api` 세 모듈도 같이 전환해야 빌드가 유지된다.
+- **`-Xstring-concat=inline` 은 JVM 전용**이라 native 컴파일에서 거부된다. KMP 공통 옵션에서 제외.
+- **detekt 가 KMP 소스셋을 못 본다**: 기본 탐색이 `src/main/{java,kotlin}` 뿐이라
+  `NO-SOURCE` 로 조용히 스킵된다. `source` 를 `src` 전체로 지정해 두 레이아웃을 모두 커버.
+- **AndroidManifest 위치**: KMP android 타깃은 `src/androidMain/AndroidManifest.xml`.
+- **테스트 실행 경로**: android 타깃에 `withHostTest {}` 를 켜서 `commonTest` 를
+  `testAndroidHostTest`(JVM) 로 돌린다. iOS 테스트는 링킹이 필요해 Xcode 없이는 못 돌린다.
+
+---
+
+## 3-1. 환경 제약 — iOS 링킹 불가 (현재 머신)
+
+이 머신에는 **Xcode 정식 설치 없이 Command Line Tools 만** 있다.
+
+```
+xcode-select -p        → /Library/Developer/CommandLineTools
+xcrun xcodebuild -version → error: unable to find utility "xcodebuild"
+```
+
+그래서 iOS 관련 작업이 두 갈래로 갈린다.
+
+| 가능 | 불가능 |
+|---|---|
+| `compileKotlinIosArm64` 등 **klib 컴파일** — 소스가 iOS 에서 컴파일되는지 전부 검증 가능 | `linkDebugTest*`, `linkDebugFramework*` 등 **네이티브 링킹** |
+| `commonTest` 를 JVM host test 로 실행 | `iosSimulatorArm64Test` — 테스트 실행 |
+| 8단계의 Kotlin 측 진입점(`ComposeUIViewController`) 작성 | Xcode 프로젝트 빌드 · 시뮬레이터 실행 · 프레임워크 산출 |
+
+**즉 1-7·9 단계는 이 머신에서 완결할 수 있고, 8단계는 Xcode 설치 후에만 마무리된다.**
+(App Store 또는 developer.apple.com 에서 Xcode 설치 → `sudo xcode-select -s /Applications/Xcode.app`)
+
+---
+
+## 3-2. 3단계 사전 조사 결과 (`core:data-local:impl`)
+
+- TypeConverter 3종(`InstantConverter`, `NoteContentConverter`, `LongListConverter`)은
+  `androidx.room.TypeConverter` + `kotlin.time.Instant` + kotlinx-serialization 뿐이라 **무수정 이동 가능**.
+- **Room**: `@ConstructedBy` + `expect object ... : RoomDatabaseConstructor<LeafDatabase>` 추가,
+  `Room.databaseBuilder` 는 `expect fun` 으로 분리(Android=Context, iOS=NSDocumentDirectory 경로),
+  `setDriver(BundledSQLiteDriver())` 필요. KSP 를 타깃별 configuration(`kspAndroid`, `kspIosArm64`, …)에 각각 걸어야 한다.
+- **DataStore**: `preferencesDataStore(name)` Context 확장은 Android 전용.
+  `PreferenceDataStoreFactory.createWithPath { path }` + `expect fun preferencesPath(): okio.Path` 로 전환.
+- **Coil**: `Context` → `coil3.PlatformContext` 로 바꾸면 공통화된다 (Android 에서는 `Context` 의 typealias).
+- **aboutlibraries**: Gradle 플러그인이 JSON 을 **app 모듈의 Android `res/raw/aboutlibraries.json`** 으로
+  생성한다(`app/build/generated/aboutLibraries/…`). iOS 에는 이 경로가 없다.
+  → `expect suspend fun readAboutLibrariesJson(): String` 으로 분리하고,
+  androidMain 은 현재 동작을 그대로 유지, iosMain 은 5단계에서 compose-resources
+  (`composeResources/files/aboutlibraries.json`)가 붙을 때까지 빈 목록을 반환하도록 둔다.
 
 ---
 
