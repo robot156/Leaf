@@ -10,14 +10,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.jean.core.designsystem.R
 import io.github.jean.core.designsystem.ThemePreviews
 import io.github.jean.core.designsystem.component.LeafProgressIndicator
 import io.github.jean.core.designsystem.component.LeafTextButton
+import io.github.jean.core.designsystem.generated.resources.Res
+import io.github.jean.core.designsystem.generated.resources.error_btn
+import io.github.jean.core.designsystem.generated.resources.error_title_for_footer
 import io.github.jean.core.designsystem.theme.LeafTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PagingLoadingFooter(modifier: Modifier = Modifier) {
@@ -41,7 +43,7 @@ fun PagingErrorFooter(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(R.string.error_title_for_footer),
+            text = stringResource(Res.string.error_title_for_footer),
             style = LeafTheme.typography.meta,
             color = LeafTheme.colors.textMuted,
             textAlign = TextAlign.Center,
@@ -50,7 +52,7 @@ fun PagingErrorFooter(
         Spacer(modifier = Modifier.height(4.dp))
 
         LeafTextButton(
-            text = stringResource(R.string.error_btn),
+            text = stringResource(Res.string.error_btn),
             typography = LeafTheme.typography.meta,
             leadingIconRes = LeafTheme.res.refresh,
             iconSize = 12.dp,

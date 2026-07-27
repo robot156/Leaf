@@ -93,7 +93,10 @@ androidx-lifecycle-savedState = { group = "androidx.lifecycle", name = "lifecycl
 
 # AndroidX Navigation3
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "androidxNavigation3" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "androidxNavigation3" }
+# navigation3-ui 는 androidx 쪽이 ios_x64 조차 없이 android/jvmStubs/linuxx64Stubs 만 내므로
+# JetBrains 포크를 쓴다. 패키지는 androidx.navigation3.ui 그대로라 import 변경은 없다.
+# runtime 은 upstream 이 iOS 를 퍼블리시하므로 그대로 둔다. 버전 라인이 달라 jbNavigation3 를 쓴다.
+jb-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "jbNavigation3" }
 
 # AndroidX Room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
@@ -179,7 +182,7 @@ mvi = [
 ]
 androidx-navigation3 = [
     "androidx-navigation3-runtime",
-    "androidx-navigation3-ui",
+    "jb-navigation3-ui",
 ]
 androidx-room = [
     "androidx-room-runtime",

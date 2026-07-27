@@ -29,8 +29,6 @@ import androidx.core.graphics.createBitmap
 import kotlin.math.hypot
 import kotlin.math.roundToInt
 
-typealias MaskAnimActive = (MaskAnimModel, Float, Float) -> Unit
-
 @Stable
 private data class AnimState(
     val clickX: Float = 0f,
@@ -39,8 +37,8 @@ private data class AnimState(
 )
 
 @Composable
-fun MaskBox(
-    animationDurationMillis: Long = 650L,
+actual fun MaskBox(
+    animationDurationMillis: Long,
     content: @Composable (MaskAnimActive) -> Unit,
 ) {
     var maskAnimationState by remember { mutableStateOf(MaskAnimModel.Expend) }

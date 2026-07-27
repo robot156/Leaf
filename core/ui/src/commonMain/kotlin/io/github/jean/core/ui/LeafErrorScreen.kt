@@ -10,14 +10,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.jean.core.designsystem.R
 import io.github.jean.core.designsystem.ThemePreviews
 import io.github.jean.core.designsystem.component.LeafImage
 import io.github.jean.core.designsystem.component.LeafSolidButton
+import io.github.jean.core.designsystem.generated.resources.Res
+import io.github.jean.core.designsystem.generated.resources.error_btn
+import io.github.jean.core.designsystem.generated.resources.error_desc
+import io.github.jean.core.designsystem.generated.resources.error_title
 import io.github.jean.core.designsystem.theme.LeafTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LeafErrorScreen(
@@ -44,7 +47,7 @@ fun LeafErrorScreen(
         }
 
         Text(
-            text = stringResource(R.string.error_title),
+            text = stringResource(Res.string.error_title),
             style = LeafTheme.typography.bookTitleSmall,
             color = LeafTheme.colors.textPrimary,
             textAlign = TextAlign.Center,
@@ -53,7 +56,7 @@ fun LeafErrorScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = stringResource(R.string.error_desc),
+            text = stringResource(Res.string.error_desc),
             style = LeafTheme.typography.body,
             color = LeafTheme.colors.textMuted,
             textAlign = TextAlign.Center,
@@ -62,7 +65,7 @@ fun LeafErrorScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         LeafSolidButton(
-            text = stringResource(R.string.error_btn),
+            text = stringResource(Res.string.error_btn),
             onClick = onRetry,
             leadingIconRes = LeafTheme.res.refresh,
         )

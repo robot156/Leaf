@@ -7,6 +7,10 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * 앱 공용 네비게이터.
@@ -54,9 +58,36 @@ class Navigator internal constructor(
     }
 }
 
+/**
+ * [Route] 다형성 직렬화 설정.
+ *
+ * nav3 에는 설정 없이 쓰는 `rememberNavBackStack` 오버로드가 있지만 **Android 전용**이다
+ * (리플렉션으로 서브타입을 찾는다). 공용 코드에서는 모든 [Route] 구현을 명시적으로 등록해야 한다.
+ *
+ * Route 는 feature 모듈마다 흩어져 있으므로, 전부를 아는 진입점(MainNavHost)에서 호출한다.
+ * 등록을 빠뜨린 Route 는 백스택 복원 시점에 직렬화 예외로 드러난다.
+ *
+ * ```
+ * val configuration = routeSavedStateConfiguration {
+ *     subclass(HomeRoute::class)
+ *     subclass(SearchRoute::class)
+ * }
+ * ```
+ */
+fun routeSavedStateConfiguration(register: PolymorphicModuleBuilder<NavKey>.() -> Unit): SavedStateConfiguration =
+    SavedStateConfiguration {
+        serializersModule =
+            SerializersModule {
+                polymorphic(NavKey::class, builderAction = register)
+            }
+    }
+
 @Composable
-fun rememberNavigator(startRoute: Route): Navigator {
-    val backStack = rememberNavBackStack(startRoute)
+fun rememberNavigator(
+    startRoute: Route,
+    configuration: SavedStateConfiguration,
+): Navigator {
+    val backStack = rememberNavBackStack(configuration, startRoute)
     return remember(backStack) { Navigator(backStack) }
 }
 

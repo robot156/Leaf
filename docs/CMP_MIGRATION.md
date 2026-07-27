@@ -115,8 +115,8 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ✅ 완료 |
 | 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ✅ 완료 |
 | 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ✅ 완료 |
-| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ 다음 |
-| 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ |
+| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ✅ 완료 |
+| 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ 다음 |
 | 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
 | 9 | 정리 | `templates/feature-module` 갱신, README 모듈 구조 갱신 | ⬜ |
 
@@ -181,6 +181,23 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 - **JetBrains Compose 와 androidx Compose 는 Android 에서 혼용 가능**하다.
   `org.jetbrains.compose.ui:ui` 의 android variant 가 `androidx.compose.ui:ui` 를 의존하므로
   클래스가 중복되지 않는다. 덕분에 designsystem 만 먼저 CMP 로 옮기고 feature 는 나중에 옮길 수 있다.
+
+### 6단계에서 확정된 사항 (core:ui)
+
+- **`navigation3-ui` 도 패키지가 `androidx.navigation3.ui` 그대로다.** JetBrains 포크로
+  좌표만 바꾸면 되고 import 변경은 없다. `iosMain/NavDisplay.ios.kt` 도 있어 실제 iOS 구현이 있다.
+- ⚠️ **`rememberNavBackStack` 의 설정 없는 오버로드는 Android 전용**이다.
+  리플렉션으로 `NavKey` 서브타입을 찾기 때문에 공용 코드에서 쓸 수 없다.
+  → `routeSavedStateConfiguration { }` 으로 **모든 Route 를 명시적으로 등록**해야 한다.
+  Route 는 feature 마다 흩어져 있어 전부를 아는 `MainNavHost` 에서 등록한다.
+  **등록 누락은 컴파일에 걸리지 않고, 프로세스 사망 후 백스택 복원 시점에 예외로 터진다.**
+  7단계에서 `feature:main` 이 KMP 가 되면 commonTest 로 회귀 테스트를 붙일 것.
+- **`MaskBox`(테마 전환 원형 리빌)는 expect/actual 로 분리했다.**
+  전환 직전 화면을 **동기적으로** 캡처해야 하는데 Android 는 `View.draw(Canvas)` 로 되지만
+  CMP 의 `GraphicsLayer.toImageBitmap()` 은 `suspend` 라 같은 타이밍을 보장할 수 없다.
+  캡처가 늦으면 이미 바뀐 새 화면을 찍어 효과가 무의미해진다.
+  → 검증된 Android 구현을 그대로 두고, iOS 는 애니메이션 없이 즉시 전환(TODO).
+- **`androidx.lifecycle.ViewModel`, orbit-mvi 는 무수정**으로 commonMain 에서 동작한다.
 
 - **DI 그래프에 서드파티 타입을 키로 노출하지 않는다**: 그래프를 생성하는 app 모듈이
   그 타입을 해석하지 못한다(기존 `PreferenceStorageImpl` 주석에 있던 제약).

@@ -1,26 +1,34 @@
 plugins {
-    alias(libs.plugins.leaf.android.library)
-    alias(libs.plugins.leaf.android.library.compose)
+    alias(libs.plugins.leaf.kmp.library)
+    alias(libs.plugins.leaf.kmp.library.compose)
     alias(libs.plugins.leaf.detekt)
 }
 
-android {
-    namespace = "io.github.jean.core.ui"
-}
+kotlin {
+    android {
+        namespace = "io.github.jean.core.ui"
+    }
 
-dependencies {
-    implementation(projects.core.designsystem)
+    sourceSets {
+        commonMain.dependencies {
+            // LeafErrorScreen 등이 designsystem 의 컴포넌트와 Res 를 공개 API 로 노출한다.
+            api(projects.core.designsystem)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.bundles.coil)
-    implementation(libs.bundles.mvi)
-    api(libs.androidx.navigation3.runtime)
-    api(libs.androidx.navigation3.ui)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.animation)
+            implementation(libs.bundles.coil)
+            implementation(libs.bundles.mvi)
 
-    debugApi(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+            // Navigator·Route·NavTransitions 가 NavKey/NavDisplay 를 공개 API 로 노출한다.
+            api(libs.bundles.androidx.navigation3)
+        }
+
+        androidMain.dependencies {
+            // MaskBox 의 Android 구현이 View 캡처(createBitmap/applyCanvas)와
+            // ValueAnimator 의 addListener 확장을 쓴다.
+            implementation(libs.androidx.core.ktx)
+        }
+    }
 }

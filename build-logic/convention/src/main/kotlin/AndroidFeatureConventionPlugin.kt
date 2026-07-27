@@ -24,9 +24,9 @@ internal class AndroidFeatureConventionPlugin : Plugin<Project> {
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.bundles.androidx.lifecycle)
-                // AndroidX Navigation
+                // Navigation3 — ui 는 JetBrains 포크(패키지는 androidx.navigation3.ui 그대로)
                 implementation(libs.androidx.navigation3.runtime)
-                implementation(libs.androidx.navigation3.ui)
+                implementation(libs.jb.navigation3.ui)
                 // AndroidX Compose material3
                 implementation(libs.androidx.compose.material3)
 

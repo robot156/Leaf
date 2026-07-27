@@ -20,6 +20,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import io.github.jean.core.ui.navigation.LocalNavigator
 import io.github.jean.core.ui.navigation.rememberNavigator
+import io.github.jean.core.ui.navigation.routeSavedStateConfiguration
 import io.github.jean.feature.home.navigation.HomeRoute
 import io.github.jean.feature.home.navigation.homeEntry
 import io.github.jean.feature.imageviewer.navigation.ImageViewerRoute
@@ -43,9 +44,36 @@ import io.github.jean.feature.write.navigation.searchEntry
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * 백스택 복원을 위한 Route 다형성 등록.
+ *
+ * nav3 의 설정 없는 오버로드는 리플렉션 기반이라 Android 전용이다.
+ * 공용 코드로 옮기려면 모든 Route 를 명시적으로 등록해야 한다.
+ *
+ * ⚠️ 새 Route 를 추가하면 여기에도 반드시 등록해야 한다.
+ * 빠뜨리면 컴파일은 되지만 프로세스 사망 후 백스택 복원 시점에 직렬화 예외로 터진다.
+ */
+private val LeafNavConfiguration =
+    routeSavedStateConfiguration {
+        subclass(IntroRoute::class, IntroRoute.serializer())
+        subclass(HomeRoute::class, HomeRoute.serializer())
+        subclass(SearchRoute::class, SearchRoute.serializer())
+        subclass(EditorRoute::class, EditorRoute.serializer())
+        subclass(NoteDetailRoute::class, NoteDetailRoute.serializer())
+        subclass(ImageViewerRoute::class, ImageViewerRoute.serializer())
+        subclass(SettingRoute::class, SettingRoute.serializer())
+        subclass(SettingThemeRoute::class, SettingThemeRoute.serializer())
+        subclass(SettingLicensesRoute::class, SettingLicensesRoute.serializer())
+        subclass(SettingLicenseDetailRoute::class, SettingLicenseDetailRoute.serializer())
+    }
+
 @Composable
 internal fun MainNavHost(modifier: Modifier = Modifier) {
-    val navigator = rememberNavigator(startRoute = IntroRoute)
+    val navigator =
+        rememberNavigator(
+            startRoute = IntroRoute,
+            configuration = LeafNavConfiguration,
+        )
     val context = LocalContext.current
 
     CompositionLocalProvider(LocalNavigator provides navigator) {
