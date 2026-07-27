@@ -79,4 +79,8 @@ dependencies {
 
     implementation(libs.metrox.android)
     implementation(libs.metrox.viewmodel)
+
+    // KMP 라이브러리 모듈에는 빌드 타입이 없어 debugImplementation 을 쓸 수 없다.
+    // 프리뷰 렌더링용 tooling 은 빌드 타입이 있는 app 에서만 debug 로 넣는다.
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

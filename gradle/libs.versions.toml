@@ -70,6 +70,17 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+# Compose Multiplatform
+# Android variant 는 내부적으로 androidx.compose.* 에 위임하므로(예: org.jetbrains.compose.ui:ui 의
+# androidApiElements 가 androidx.compose.ui:ui 를 의존) 아직 androidx 좌표를 쓰는 모듈과 혼용해도 안전하다.
+compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "composeMultiplatform" }
+compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "composeMultiplatform" }
+compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-animation = { group = "org.jetbrains.compose.animation", name = "animation", version.ref = "composeMultiplatform" }
+compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "composeMaterial3" }
+
 # AndroidX Activity Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 
@@ -142,6 +153,7 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-compose-rule = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRule" }
 detekt-gradle-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+compose-gradlePlugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "composeMultiplatform" }
 
 [bundles]
 di = [
@@ -211,6 +223,7 @@ leaf-metro = { id = "leaf.metro" }
 leaf-detekt = { id = "leaf.detekt" }
 leaf-jvm = { id = "leaf.jvm.library" }
 leaf-kmp-library = { id = "leaf.kmp.library" }
+leaf-kmp-library-compose = { id = "leaf.kmp.library.compose" }
 leaf-module-generator = { id = "leaf.module.generator" }
 
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

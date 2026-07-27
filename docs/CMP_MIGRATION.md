@@ -48,7 +48,7 @@ Google이 퍼블리시하는 `androidx.compose.ui / foundation / material3` 는 
 | `androidx.compose.animation:animation` | `org.jetbrains.compose.animation:animation` |
 | `androidx.compose.material3:material3` | `org.jetbrains.compose.material3:material3` ⚠️ **별도 버전 라인** |
 | `androidx.navigation3:navigation3-ui` | `org.jetbrains.androidx.navigation3:navigation3-ui` |
-| `androidx.compose.ui.tooling.preview.Preview` | `org.jetbrains.compose.ui.tooling.preview.Preview` |
+| `androidx.compose.ui:ui-tooling-preview` | `org.jetbrains.compose.ui:ui-tooling-preview` — **패키지는 그대로** (아래 참고) |
 | `R.drawable` / `R.string` / `res/font` | `compose-resources` (`Res.drawable.*`, `Res.string.*`) |
 | *`androidx.lifecycle:*`, `androidx.navigation3:navigation3-runtime`* | *변경 없음* |
 
@@ -114,8 +114,8 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 2 | `core:data-remote:impl` | Ktor 엔진 자동 탐색, `HtmlText` 순수 Kotlin 재작성 + 테스트 | ✅ 완료 |
 | 3 | `core:data-local:impl` | Room KMP + `sqlite-bundled`, DataStore okio path, license/image | ✅ 완료 |
 | 4 | `core:data:impl` | `Environment` expect/actual + `LeafBuildConfig` 생성 태스크 | ✅ 완료 |
-| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ⬜ 다음 |
-| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ |
+| 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ✅ 완료 |
+| 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ⬜ 다음 |
 | 7 | `feature/*` (9개) | intro → home → write → note-detail → setting → setting-theme → setting-license → image-viewer → main | ⬜ |
 | 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
 | 9 | 정리 | `templates/feature-module` 갱신, README 모듈 구조 갱신 | ⬜ |
@@ -149,6 +149,39 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
   `BuildFlags` 로 그래프에 주입한다. 라이브러리 모듈에서는 variant 를 알 방법이 없다.
 - **detekt 는 매 단계 전체(`./gradlew detekt`)로 돌린다.** 모듈 단위로만 돌리면
   다른 모듈에 남은 위반을 놓친다 (2단계의 `BracesOnWhenStatements` 를 4단계에서 발견).
+### 5단계에서 확정된 사항 (CMP·리소스)
+
+- **`@Preview` 는 import 를 바꿀 필요가 없다.** `org.jetbrains.compose.ui:ui-tooling-preview` 는
+  `androidx.compose.ui.tooling.preview` 패키지를 **그대로** commonMain 에 제공한다.
+  `name`/`uiMode`/`backgroundColor`/`showBackground`, `PreviewParameter(Provider)` 전부 있다.
+  Android 전용이던 `Configuration.UI_MODE_NIGHT_*` 만
+  `androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_*` 로 바꾸면 된다 —
+  프리뷰 충실도 손실 없음.
+- **KMP android 타깃은 Android 리소스가 기본 비활성**이다. `androidResources.enable = true`
+  를 켜야 `src/androidMain/res` 가 인식된다.
+- **Android 플랫폼 리소스는 compose-resources 로 옮기면 안 된다.** 스플래시 테마
+  (`Theme.Leaf.Splash`, `splash_background`, `values-night`)는 `feature/main` 의 매니페스트가
+  `@style/` 로 참조하므로 `androidMain/res` 에 남는다. compose-resources 는 Compose 코드에서만 읽힌다.
+- **`compose-resources` 의 `Res` 는 기본 `internal`** 이다. 다른 모듈이 쓰려면
+  `compose.resources { publicResClass = true }` 가 필요하다.
+- **`Font()` 가 `@Composable` 로 바뀐다.** Android 의 `Font(R.font.x)` 는 top-level `val` 에서
+  됐지만 compose-resources 의 `Font(Res.font.x)` 는 컴포지션 안에서만 호출할 수 있다.
+  `LeafSerif`/`LeafSans`/`LeafTypographyDefault` 를 `rememberLeafTypography()` 로 합쳤다.
+  `LocalLeafTypography` 가 `staticCompositionLocalOf` 라서 `remember` 없이 매번 새 인스턴스를
+  주면 하위 전체가 재구성된다.
+- **`PlatformTextStyle(includeFontPadding = ...)` 은 Android 전용 파라미터**다.
+  → `koreanPlatformTextStyle()` expect/actual (iOS 는 `null`).
+- **`String.format` 은 JVM 전용**이라 `padStart` 등으로 바꿔야 한다.
+- **빌드 타입이 없어 `debugImplementation` 을 못 쓴다.** 프리뷰 렌더링용 `ui-tooling` 은
+  빌드 타입이 있는 `app` 에서 `debugImplementation` 으로 넣는다.
+- **문자열은 7단계까지 이중 관리**다. feature 들이 아직 `R.string.*`(81곳/23파일)을 쓰므로
+  `androidMain/res/values/strings.xml` 에 사본을 두고 컴파일을 유지한다.
+  정본은 `commonMain/composeResources/values/strings.xml` — 7단계에서 사본을 삭제한다.
+  drawable·font 는 사용처가 designsystem 내부(`LeafTheme.res` 경유)뿐이라 사본 없이 단일화했다.
+- **JetBrains Compose 와 androidx Compose 는 Android 에서 혼용 가능**하다.
+  `org.jetbrains.compose.ui:ui` 의 android variant 가 `androidx.compose.ui:ui` 를 의존하므로
+  클래스가 중복되지 않는다. 덕분에 designsystem 만 먼저 CMP 로 옮기고 feature 는 나중에 옮길 수 있다.
+
 - **DI 그래프에 서드파티 타입을 키로 노출하지 않는다**: 그래프를 생성하는 app 모듈이
   그 타입을 해석하지 못한다(기존 `PreferenceStorageImpl` 주석에 있던 제약).
   → 플랫폼별 생성이 필요한 것은 androidMain/iosMain 의 binding container 가

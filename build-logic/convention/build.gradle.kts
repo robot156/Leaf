@@ -9,6 +9,7 @@ dependencies {
     compileOnly(libs.room.gradlePlugin)
     compileOnly(libs.detekt.gradle.plugin)
     compileOnly(libs.kotlin.compose.compiler.extension)
+    compileOnly(libs.compose.gradlePlugin)
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
@@ -53,6 +54,10 @@ gradlePlugin {
         register("kmpLibrary") {
             id = "leaf.kmp.library"
             implementationClass = "KmpLibraryConventionPlugin"
+        }
+        register("kmpLibraryCompose") {
+            id = "leaf.kmp.library.compose"
+            implementationClass = "KmpLibraryComposeConventionPlugin"
         }
         register("moduleGenerator") {
             id = "leaf.module.generator"

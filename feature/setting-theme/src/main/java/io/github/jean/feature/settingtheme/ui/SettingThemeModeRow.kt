@@ -24,6 +24,7 @@ import io.github.jean.core.designsystem.modifier.border
 import io.github.jean.core.designsystem.modifier.clip
 import io.github.jean.core.designsystem.modifier.pressScale
 import io.github.jean.core.designsystem.theme.LeafTheme
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 fun SettingThemeModeRow(
@@ -86,7 +87,7 @@ fun SettingThemeModeRow(
 }
 
 @Composable
-private fun Theme.iconRes(): Int =
+private fun Theme.iconRes(): DrawableResource =
     when (this) {
         Theme.System -> LeafTheme.res.themeAuto
         Theme.Light -> LeafTheme.res.sun
