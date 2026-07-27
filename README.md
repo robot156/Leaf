@@ -5,9 +5,25 @@
 Leaf는 읽고 있는 책을 검색해 등록하고 독서 노트를 만드는 앱입니다.
 100% Kotlin · Compose Multiplatform 으로 작성된 멀티 모듈 프로젝트입니다.
 
-현재 **Android 는 출시 가능한 상태**이고, **iOS 는 진입점(Xcode 프로젝트) 작업이 남아 있습니다.**
-공용 모듈 19개는 모두 Android · iOS 양쪽으로 컴파일됩니다.
-자세한 진행 상황은 [docs/CMP_MIGRATION.md](docs/CMP_MIGRATION.md) 를 참고하세요.
+Android · iOS 두 플랫폼에서 동작합니다. 화면·상태·데이터 계층 전부가 공용 코드입니다.
+마이그레이션 과정과 플랫폼별 제약은 [docs/CMP_MIGRATION.md](docs/CMP_MIGRATION.md) 에 정리해 두었습니다.
+
+## 실행
+
+**Android**
+```
+./gradlew :app:installDebug
+```
+
+**iOS** — Xcode 로 `iosApp/iosApp.xcodeproj` 를 열고 실행합니다.
+빌드 시 `Compile Kotlin Framework` 스크립트 단계가 `:app-ios` 프레임워크와
+라이선스 JSON을 먼저 만듭니다. 커맨드라인으로 빌드하려면:
+
+```
+xcodebuild -project iosApp/iosApp.xcodeproj -scheme iosApp \
+  -configuration Debug -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+```
 
 
 ## 앱 소개

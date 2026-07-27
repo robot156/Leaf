@@ -53,6 +53,35 @@ obj/
 # macOS
 .DS_Store
 
+# Xcode — 사용자별 상태
+# xcshareddata(공유 scheme)는 커밋한다. 없으면 `xcodebuild -scheme iosApp` 이 동작하지 않는다.
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+
+# Xcode 빌드 산출물
+DerivedData/
+build/Debug*/
+build/Release*/
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.xcarchive
+*.hmap
+*.moved-aside
+*.xcresult/
+
+# CocoaPods / SwiftPM (현재 미사용 — 도입 시 대비)
+Pods/
+.swiftpm/
+Package.resolved
+
+# Kotlin/Native
+# 프레임워크 산출물(app-ios/build/bin)은 build/ 규칙에 이미 포함된다
+*.klib
+
 # Secrets / service config
 secrets.properties
 google-services.json

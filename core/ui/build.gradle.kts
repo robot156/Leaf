@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.leaf.kmp.library)
     alias(libs.plugins.leaf.kmp.library.compose)
+    alias(libs.plugins.leaf.metro)
     alias(libs.plugins.leaf.detekt)
 }
 
@@ -20,6 +21,8 @@ kotlin {
             implementation(libs.compose.animation)
             implementation(libs.bundles.coil)
             implementation(libs.bundles.mvi)
+            // LeafViewModelFactory — 두 플랫폼 그래프가 함께 쓰는 DI 배선
+            api(libs.bundles.di.kmp)
 
             // Navigator·Route·NavTransitions 가 NavKey/NavDisplay 를 공개 API 로 노출한다.
             api(libs.bundles.androidx.navigation3)

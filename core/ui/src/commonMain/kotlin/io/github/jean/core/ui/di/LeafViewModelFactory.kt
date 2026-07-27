@@ -1,4 +1,4 @@
-package io.github.jean.leaf.di
+package io.github.jean.core.ui.di
 
 import androidx.lifecycle.ViewModel
 import dev.zacsweers.metro.AppScope
@@ -13,12 +13,14 @@ import kotlin.reflect.KClass
 /**
  * 앱 전체에서 딱 하나 필요한 고정 배선 코드 (Hilt는 이걸 내부에서 숨겨서 생성).
  * 로직 없음 — 맵 3개를 받아 넘기는 게 전부. 다시 열어볼 일 없는 파일.
+ *
+ * Android·iOS 두 진입점의 DI 그래프가 모두 이 바인딩을 필요로 하므로 공용 모듈에 둔다.
  */
 @Inject
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
 @Suppress("ktlint:standard:parameter-wrapping") // ktlint 직접 사용 시
-class AppViewModelFactory(
+class LeafViewModelFactory(
     override val viewModelProviders: Map<KClass<out ViewModel>, () -> ViewModel>,
     override val assistedFactoryProviders: Map<KClass<out ViewModel>, () -> ViewModelAssistedFactory>,
     override val manualAssistedFactoryProviders:

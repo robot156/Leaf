@@ -117,7 +117,7 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 5 | `core:designsystem` | compose-resources 전환, material3·Preview 좌표 교체 | ✅ 완료 |
 | 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ✅ 완료 |
 | 7 | `feature/*` (9개) | 전 모듈 KMP 전환, `R.string` 76곳 → compose-resources, 플랫폼 액션 분리 | ✅ 완료 |
-| 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
+| 8 | 진입점 | `:app-ios` 프레임워크 + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | ✅ 완료 |
 | 9 | 정리 | 죽은 convention plugin·catalog 항목 제거, 템플릿·README 갱신 | ✅ 완료 |
 
 ### 9단계에서 제거한 것
@@ -250,25 +250,53 @@ Compose 컴파일러 참여가 바뀌고 이 환경에서는 release 빌드(서�
 
 ---
 
-## 3-1. 환경 제약 — iOS 링킹 불가 (현재 머신)
+### 8단계에서 확정된 사항 (iOS 진입점)
 
-이 머신에는 **Xcode 정식 설치 없이 Command Line Tools 만** 있다.
+- **구조**: `:app-ios`(Kotlin, `LeafApp.framework` 산출) + `iosApp/`(Xcode 프로젝트).
+  `:app-ios` 는 android 타깃이 없어 `leaf.kmp.library` 를 쓸 수 없다
+  (그 convention 은 `com.android.kotlin.multiplatform.library` 를 함께 적용한다) → 직접 구성.
+- **컴포지션 루트를 공용화**: `MainActivity` 의 `setContent` 내용을 `feature:main` 의
+  `LeafApp(viewModelFactory, onDarkThemeChanged)` 로 뽑았다.
+  Android 만 `onDarkThemeChanged` 로 `enableEdgeToEdge` 를 다시 호출한다.
+- **`AppViewModelFactory` → `core:ui` 의 `LeafViewModelFactory`**.
+  두 플랫폼 그래프가 모두 이 `@ContributesBinding` 을 필요로 한다.
+  그래프를 만드는 모듈의 **컴파일 클래스패스에 보여야** 하므로 `app` 에 `core:ui` 를 직접 의존으로 추가했다
+  (feature 경유 `implementation` 은 노출되지 않아 `[Metro/MissingBinding]` 이 났다).
+- **iOS 그래프는 `MetroAppComponentProviders` 를 상속하지 않는다** — metrox-android 는 Android 전용이고
+  iOS 에는 Activity 개념이 없다. `IosAppGraph : ViewModelGraph` 로 충분하다.
+  `isDebug` 는 Kotlin 이 알 수 없어 Swift 의 `#if DEBUG` 가 `createIosAppGraph(isDebug:)` 로 넘긴다.
+- ⚠️ **`Info.plist` 에 `CADisableMinimumFrameDurationOnPhone` 이 없으면 앱이 즉시 죽는다.**
+  CMP 의 `PlistSanityCheck` 가 실행 시점에 검사하고 `error()` 를 던진다(SIGABRT).
+  고주사율 기기 성능에 직접 영향이 있어 체크를 끄는 대신 키를 추가했다.
+- **Xcode 프로젝트는 objectVersion 77(Xcode 16+) 의 동기화 그룹**(`PBXFileSystemSynchronizedRootGroup`)을 쓴다.
+  파일을 pbxproj 에 하나씩 등록하지 않아 관리가 훨씬 쉽다. 대신 `Info.plist` 를 동기화 폴더 안에 두면
+  리소스로도 복사되어 `Multiple commands produce ... Info.plist` 로 실패한다 → 폴더 밖(`iosApp/Info.plist`)에 둔다.
+- **`ENABLE_USER_SCRIPT_SANDBOXING = NO`** 가 필요하다. 켜져 있으면 빌드 스크립트가
+  Gradle 출력 디렉터리에 쓸 수 없다.
+- **라이선스 목록**: `:app-ios:exportLibraryDefinitions` 가 `iosApp/iosApp/aboutlibraries.json` 을 만들고
+  동기화 그룹이 번들 리소스로 포함한다. iOS 는 `NSBundle.pathForResource` 로 읽는다.
+  **이 JSON 은 커밋한다** — Xcode 는 빌드 계획 시점에 파일 목록을 확정하므로,
+  없는 상태로 시작하면 첫 빌드에서 리소스에 포함되지 않는다.
+- **이미지 공유**: `ImageBitmap` → `asSkiaBitmap()` → PNG → `UIImage` → `UIActivityViewController`.
+  이미 present 된 컨트롤러가 있으면 그 위에 올려야 무시되지 않는다.
 
-```
-xcode-select -p        → /Library/Developer/CommandLineTools
-xcrun xcodebuild -version → error: unable to find utility "xcodebuild"
-```
+## 3-1. 환경 제약 — iOS 링킹 (해결됨)
 
-그래서 iOS 관련 작업이 두 갈래로 갈린다.
+1-7·9 단계는 Command Line Tools 만으로 진행했다. klib 컴파일은 되지만 **네이티브 링킹**
+(`linkDebugTest*`, `linkDebugFramework*`)은 Xcode 정식 설치가 필요해 8단계와 iOS 테스트 실행이 막혀 있었다.
 
-| 가능 | 불가능 |
+Xcode 26.6 설치 후 해소되어 8단계를 완료했다. 확인된 것:
+
+| 항목 | 결과 |
 |---|---|
-| `compileKotlinIosArm64` 등 **klib 컴파일** — 소스가 iOS 에서 컴파일되는지 전부 검증 가능 | `linkDebugTest*`, `linkDebugFramework*` 등 **네이티브 링킹** |
-| `commonTest` 를 JVM host test 로 실행 | `iosSimulatorArm64Test` — 테스트 실행 |
-| 8단계의 Kotlin 측 진입점(`ComposeUIViewController`) 작성 | Xcode 프로젝트 빌드 · 시뮬레이터 실행 · 프레임워크 산출 |
+| `linkDebugFrameworkIosSimulatorArm64` | ✅ `LeafApp.framework` 산출, 헤더에 진입점 노출 |
+| `xcodebuild` (Debug / iphonesimulator) | ✅ `Leaf.app` 빌드 |
+| 시뮬레이터 실행 (iPhone 17 Pro) | ✅ 홈 화면 렌더 — 폰트·문자열·드로어블·팔레트·Room DB·intro→home 내비게이션 |
+| `iosSimulatorArm64Test` | ✅ 10건 통과 |
 
-**즉 1-7·9 단계는 이 머신에서 완결할 수 있고, 8단계는 Xcode 설치 후에만 마무리된다.**
-(App Store 또는 developer.apple.com 에서 Xcode 설치 → `sudo xcode-select -s /Applications/Xcode.app`)
+**수동 확인이 남은 것**: `simctl` 에는 탭 입력 API 가 없고 Simulator GUI 자동화는 접근성 권한이 필요해서,
+화면 전환이 필요한 흐름은 자동으로 검증하지 못했다 — 책 검색(Ktor 네트워킹), 라이선스 목록 렌더,
+이미지 공유 시트, 텍스트 입력. 라이선스 JSON 이 앱 번들에 들어간 것까지는 확인했다.
 
 ---
 

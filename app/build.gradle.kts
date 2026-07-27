@@ -58,6 +58,8 @@ aboutLibraries {
 dependencies {
     implementation(projects.core.common)
     implementation(projects.core.designsystem)
+    // LeafViewModelFactory 의 @ContributesBinding 이 DI 그래프 생성 시점에 보여야 한다.
+    implementation(projects.core.ui)
 
     implementation(projects.core.data.impl)
     implementation(projects.core.dataLocal.impl)

@@ -21,16 +21,18 @@ import io.github.jean.core.datalocal.datastore.PreferenceStorage
 import io.github.jean.core.datalocal.datastore.PreferenceStorageImpl
 import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path.Companion.toPath
+import platform.Foundation.NSBundle
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
+import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.NSUserDomainMask
+import platform.Foundation.stringWithContentsOfFile
 
 @ContributesTo(AppScope::class)
 @BindingContainer
 object IosLocalBindings {
-    private const val EMPTY_LIBS_JSON = """{"libraries":[],"licenses":{}}"""
-
     @Provides
     @SingleIn(AppScope::class)
     fun provideLeafDatabase(): LeafDatabase =
@@ -53,18 +55,34 @@ object IosLocalBindings {
     fun provideImageCacheDataSource(): ImageCacheDataSource = ImageCacheDataSourceImpl(PlatformContext.INSTANCE)
 
     /**
-     * iOS 는 아직 aboutlibraries JSON 을 담을 리소스 경로가 없다.
-     * 5단계에서 compose-resources(`composeResources/files/aboutlibraries.json`)가 붙으면
-     * 그 파일을 읽도록 바꾼다. 그때까지 설정 화면의 라이선스 목록은 비어 있다.
+     * `aboutlibraries.json` 은 `:app-ios:exportLibraryDefinitions` 가 `iosApp/iosApp/` 에 만들고
+     * Xcode 의 동기화 그룹이 앱 번들 리소스로 포함한다.
+     * (Android 는 플러그인이 `res/raw` 에 넣어 주지만 iOS 에는 그 경로가 없다)
      */
     @Provides
     @SingleIn(AppScope::class)
     fun provideLicenseDataSource(): LicenseDataSource =
         LicenseDataSourceImpl(
             LibsLoader {
-                Libs.Builder().withJson(EMPTY_LIBS_JSON).build()
+                Libs.Builder().withJson(readAboutLibrariesJson()).build()
             },
         )
+}
+
+/**
+ * 앱 번들에 담긴 라이선스 JSON.
+ *
+ * 파일이 없으면 목록이 조용히 비는 대신 즉시 실패하게 둔다 —
+ * 번들에서 빠졌다는 건 빌드 설정이 깨졌다는 뜻이라 조용히 넘기면 알아채기 어렵다.
+ */
+@OptIn(ExperimentalForeignApi::class)
+private fun readAboutLibrariesJson(): String {
+    val path =
+        NSBundle.mainBundle.pathForResource("aboutlibraries", ofType = "json")
+            ?: error("aboutlibraries.json 이 앱 번들에 없습니다. :app-ios:exportLibraryDefinitions 실행 여부를 확인하세요.")
+    return checkNotNull(NSString.stringWithContentsOfFile(path, encoding = NSUTF8StringEncoding, error = null)) {
+        "aboutlibraries.json 을 읽을 수 없습니다: $path"
+    }
 }
 
 @OptIn(ExperimentalForeignApi::class)
