@@ -31,29 +31,25 @@ fun LeafImage(
     val sizedModifier = if (size != null) modifier.size(size) else modifier
     val colorFilter = color?.let { ColorFilter.tint(it) }
 
-    if (LocalInspectionMode.current) {
-        val painterResource =
-            when (model) {
-                is DrawableResource -> {
-                    painterResource(model)
-                }
+    // 로컬 드로어블은 Coil 을 거치지 않고 직접 그린다.
+    // Coil 은 compose-resources 의 DrawableResource 를 모델로 이해하지 못해서
+    // 넘기면 로드에 실패하고 error 폴백(placeholder)만 나온다.
+    // Android 전용이던 시절에는 model 이 R.drawable 의 Int 라서 Coil 이 처리해 줬다.
+    val localDrawable = model as? DrawableResource
 
-                else -> {
-                    (placeholder ?: error)
-                        ?.let { painterResource(it) }
-                        ?: painterResource(LeafTheme.res.placeholder)
-                }
-            }
+    // 프리뷰에서는 네트워크를 못 타므로 플레이스홀더로 대체한다.
+    val previewFallback = if (LocalInspectionMode.current) placeholder ?: error ?: LeafTheme.res.placeholder else null
 
+    val localPainter = (localDrawable ?: previewFallback)?.let { painterResource(it) }
+    if (localPainter != null) {
         Image(
-            painter = painterResource,
+            painter = localPainter,
             contentDescription = contentDescription,
             modifier = sizedModifier,
             alpha = alpha,
             colorFilter = colorFilter,
             contentScale = scale,
         )
-
         return
     }
 
