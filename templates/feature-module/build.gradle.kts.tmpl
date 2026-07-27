@@ -1,11 +1,9 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "__PACKAGE__"
-    resourcePrefix = "__MODULE_NAME_SNAKE_CASE___"
-}
-
-dependencies {
+kotlin {
+    android {
+        namespace = "__PACKAGE__"
+    }
 }

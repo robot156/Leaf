@@ -23,18 +23,6 @@ gradlePlugin {
             id = "leaf.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
-        register("androidLibrary") {
-            id = "leaf.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
-        }
-        register("androidLibraryCompose") {
-            id = "leaf.android.library.compose"
-            implementationClass = "AndroidLibraryComposeConventionPlugin"
-        }
-        register("androidFeatureConvention") {
-            id = "leaf.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
-        }
         register("room") {
             id = "leaf.room"
             implementationClass = "RoomConventionPlugin"
@@ -46,10 +34,6 @@ gradlePlugin {
         register("detekt") {
             id = "leaf.detekt"
             implementationClass = "DetektConventionPlugin"
-        }
-        register("jvmLibrary") {
-            id = "leaf.jvm.library"
-            implementationClass = "JvmLibraryPlugin"
         }
         register("kmpLibrary") {
             id = "leaf.kmp.library"

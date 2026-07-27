@@ -69,10 +69,11 @@ abstract class GenerateFeatureModuleTask @Inject constructor() : DefaultTask() {
         }
 
         // 패키지 디렉터리 정리
-        val srcMainJavaDirectory = outputDirectoryFile.resolve("src/main/java")
-        val templatePackagePlaceholderDirectory = srcMainJavaDirectory.resolve("__PACKAGE_DIR__")
+        // KMP 모듈이므로 소스는 src/commonMain/kotlin 에 놓인다.
+        val commonMainKotlinDirectory = outputDirectoryFile.resolve("src/commonMain/kotlin")
+        val templatePackagePlaceholderDirectory = commonMainKotlinDirectory.resolve("__PACKAGE_DIR__")
         val packageRelativePath = packageName.replace('.', '/')
-        val targetPackageDirectory = srcMainJavaDirectory.resolve(packageRelativePath)
+        val targetPackageDirectory = commonMainKotlinDirectory.resolve(packageRelativePath)
         targetPackageDirectory.mkdirs()
         templatePackagePlaceholderDirectory.listFiles()?.forEach { it.renameTo(targetPackageDirectory.resolve(it.name)) }
         templatePackagePlaceholderDirectory.deleteRecursively()
@@ -102,6 +103,10 @@ abstract class GenerateFeatureModuleTask @Inject constructor() : DefaultTask() {
 
         logger.lifecycle("생성 완료: :feature:$featureNameValue (package=$packageName)")
         logger.lifecycle("Sync 후 바로 빌드 가능")
+        logger.lifecycle(
+            "⚠️ 새 Route 는 MainNavHost 의 LeafNavConfiguration 에도 등록해야 한다. " +
+                "빠뜨리면 백스택 복원 시점에만 터진다.",
+        )
     }
 
     private fun String.toUpperCamel(): String =

@@ -76,7 +76,7 @@ fun LeafDatePickerDialog(
 
     val pagerState =
         rememberPagerState(
-            initialPage = pageOf(initialDate.year, initialDate.monthNumber),
+            initialPage = pageOf(initialDate.year, initialDate.month.number),
             pageCount = { TOTAL_MONTH_PAGES },
         )
     val visibleYear = START_YEAR + pagerState.currentPage / 12
@@ -338,7 +338,7 @@ private fun DayCell(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = date.dayOfMonth.toString(),
+            text = date.day.toString(),
             style = LeafTheme.typography.body,
             color =
                 when {

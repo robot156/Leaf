@@ -52,7 +52,6 @@ detektComposeRule = "0.6.3"
 orbit = "12.0.0"
 
 # ETC
-jetbrainsKotlinJvm = "2.4.10"
 aboutlibraries = "15.0.4"
 zoomable = "2.13.0"
 
@@ -64,11 +63,7 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 # AndroidX Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 # Compose Multiplatform
 # Android variant 는 내부적으로 androidx.compose.* 에 위임하므로(예: org.jetbrains.compose.ui:ui 의
@@ -85,7 +80,6 @@ compose-material3 = { group = "org.jetbrains.compose.material3", name = "materia
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 
 # AndroidX Lifecycle
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewModel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidxLifecycle" }
@@ -100,9 +94,9 @@ jb-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-u
 
 # AndroidX Room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
-# KMP 에서는 프레임워크 SQLite 대신 번들 드라이버를 쓴다. room-ktx 는 iOS 미퍼블리시라 제외.
+# KMP 에서는 프레임워크 SQLite 대신 번들 드라이버를 쓴다.
+# (room-ktx 는 iOS 미퍼블리시라 아예 쓰지 않는다)
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidxSqlite" }
 
 # AndroidX DataStore
@@ -189,20 +183,11 @@ androidx-navigation3 = [
     "androidx-navigation3-runtime",
     "jb-navigation3-ui",
 ]
-androidx-room = [
-    "androidx-room-runtime",
-    "androidx-room-ktx",
-]
 androidx-lifecycle = [
     "androidx-lifecycle-runtime-compose",
     "androidx-lifecycle-viewModel-compose",
     "androidx-lifecycle-viewmodel-navigation3",
     "androidx-lifecycle-savedState"
-]
-detekt = [
-    "detekt-formatting",
-    "detekt-compose-rule",
-    "detekt-gradle-plugin"
 ]
 
 [plugins]
@@ -223,17 +208,11 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 # Convention plugins (build-logic)
 leaf-android-application = { id = "leaf.android.application" }
 leaf-android-application-compose = { id = "leaf.android.application.compose" }
-leaf-android-library = { id = "leaf.android.library" }
-leaf-android-library-compose = { id = "leaf.android.library.compose" }
-leaf-android-feature = { id = "leaf.android.feature" }
 leaf-room = { id = "leaf.room" }
 leaf-metro = { id = "leaf.metro" }
 leaf-detekt = { id = "leaf.detekt" }
-leaf-jvm = { id = "leaf.jvm.library" }
 leaf-kmp-library = { id = "leaf.kmp.library" }
 leaf-kmp-library-compose = { id = "leaf.kmp.library.compose" }
 leaf-kmp-feature = { id = "leaf.kmp.feature" }
 leaf-module-generator = { id = "leaf.module.generator" }
 
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

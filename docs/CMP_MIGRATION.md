@@ -118,7 +118,29 @@ CMP Gradle 플러그인은 KGP >= 2.0 만 요구하고 별도 Kotlin 버전 게�
 | 6 | `core:ui` | MVIViewModel / Navigator / NavTransitions / MaskBox | ✅ 완료 |
 | 7 | `feature/*` (9개) | 전 모듈 KMP 전환, `R.string` 76곳 → compose-resources, 플랫폼 액션 분리 | ✅ 완료 |
 | 8 | 진입점 | `androidApp`(기존 app) + `iosApp` Xcode 프로젝트, `ComposeUIViewController` | 🚧 **Xcode 필요** |
-| 9 | 정리 | `templates/feature-module` 갱신, README 모듈 구조 갱신 | ⬜ |
+| 9 | 정리 | 죽은 convention plugin·catalog 항목 제거, 템플릿·README 갱신 | ✅ 완료 |
+
+### 9단계에서 제거한 것
+
+feature 전환으로 쓰이지 않게 된 것들을 정리했다.
+
+- convention plugin 4개: `leaf.android.library`, `leaf.android.library.compose`,
+  `leaf.android.feature`, `leaf.jvm.library` (+ `configureKotlinJvm`)
+- catalog: `androidx-compose-{animation,ui,ui-tooling-preview,material3}`,
+  `androidx-lifecycle-runtime-ktx`, `androidx-room-ktx`,
+  번들 `androidx-room`·`detekt`, 플러그인 `jetbrains-kotlin-jvm`·`android-library`
+  (`detekt` 번들은 마이그레이션 전부터 미사용이었다)
+- `templates/feature-module` 을 KMP 레이아웃으로 (`src/commonMain/kotlin`, 매니페스트 제거,
+  `leaf.kmp.feature`). `GenerateFeatureModuleTask` 도 경로를 맞추고,
+  생성 후 `LeafNavConfiguration` 등록을 잊지 않도록 안내 로그를 추가했다.
+  실제로 생성해 iOS 컴파일까지 통과하는지 확인했다.
+- 마이그레이션과 무관하게 남아 있던 kotlinx-datetime deprecation 2건
+  (`monthNumber`, `dayOfMonth`) 도 함께 정리했다.
+
+**남겨둔 것**: `app` 의 `leaf.android.application.compose`.
+`app` 에는 현재 `@Composable` 이 없어 형식상 불필요하지만, 제거하면 release 빌드의
+Compose 컴파일러 참여가 바뀌고 이 환경에서는 release 빌드(서명·google-services 필요)를
+검증할 수 없어 손대지 않았다.
 
 ### 0-2 단계에서 확정된 사항
 
