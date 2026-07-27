@@ -14,6 +14,13 @@ androidxNavigation3 = "1.1.4"
 androidxRoom = "2.8.4"
 androidxDatastore = "1.2.1"
 
+# Compose Multiplatform
+# 그룹별로 버전 라인이 갈라져 있다. CMP 릴리스 노트의 조합을 그대로 따라야 한다.
+composeMultiplatform = "1.11.1"      # org.jetbrains.compose.{runtime,ui,foundation,animation,components}
+composeMaterial3 = "1.11.0-alpha07"  # org.jetbrains.compose.material3 — 버전 라인 다름
+jbNavigation3 = "1.1.1"              # org.jetbrains.androidx.navigation3:navigation3-ui (runtime 은 upstream 사용)
+androidxSqlite = "2.7.0"             # androidx.sqlite:sqlite-bundled — room 과 버전 라인 다름
+
 # kotlin
 kotlin = "2.4.10"
 ksp = "2.3.9"
@@ -176,6 +183,9 @@ detekt = [
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -196,6 +206,7 @@ leaf-room = { id = "leaf.room" }
 leaf-metro = { id = "leaf.metro" }
 leaf-detekt = { id = "leaf.detekt" }
 leaf-jvm = { id = "leaf.jvm.library" }
+leaf-kmp-library = { id = "leaf.kmp.library" }
 leaf-module-generator = { id = "leaf.module.generator" }
 
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

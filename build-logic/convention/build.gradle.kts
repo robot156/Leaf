@@ -50,6 +50,10 @@ gradlePlugin {
             id = "leaf.jvm.library"
             implementationClass = "JvmLibraryPlugin"
         }
+        register("kmpLibrary") {
+            id = "leaf.kmp.library"
+            implementationClass = "KmpLibraryConventionPlugin"
+        }
         register("moduleGenerator") {
             id = "leaf.module.generator"
             implementationClass = "ModuleGeneratorPlugin"
