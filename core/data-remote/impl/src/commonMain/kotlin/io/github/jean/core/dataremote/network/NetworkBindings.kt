@@ -1,14 +1,13 @@
 package io.github.jean.core.dataremote.network
 
-import android.util.Log
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import io.github.jean.core.common.env.Environment
+import io.github.jean.core.common.log.logDebug
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -25,9 +24,9 @@ private fun logNetwork(message: String) {
     message.lineSequence().forEach { line ->
         val pretty = line.prettyJsonOrNull()
         if (pretty == null) {
-            Log.d(KTOR_LOG_TAG, line)
+            logDebug(KTOR_LOG_TAG, line)
         } else {
-            pretty.lineSequence().forEach { Log.d(KTOR_LOG_TAG, it) }
+            pretty.lineSequence().forEach { logDebug(KTOR_LOG_TAG, it) }
         }
     }
 }
@@ -46,7 +45,9 @@ object NetworkBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideHttpClient(environment: Environment): HttpClient =
-        HttpClient(CIO) {
+        // 엔진을 명시하지 않으면 Ktor 가 클래스패스에서 찾는다.
+        // androidMain 은 CIO, iosMain 은 Darwin(NSURLSession) 이 각각 잡힌다.
+        HttpClient {
             expectSuccess = true
 
             install(ContentNegotiation) {

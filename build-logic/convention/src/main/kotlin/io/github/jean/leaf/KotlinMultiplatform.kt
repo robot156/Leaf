@@ -24,6 +24,10 @@ internal fun Project.configureKotlinMultiplatform() {
             compileSdk = LeafConfig.COMPILE_SDK
             minSdk = LeafConfig.MIN_SDK
 
+            // commonTest 를 JVM 에서 돌리는 경로. iOS 테스트는 링킹에 Xcode 정식 설치가 필요하지만
+            // host test 는 그렇지 않아서, 공용 로직 검증을 Xcode 없이도 CI/로컬에서 돌릴 수 있다.
+            withHostTest {}
+
             compilerOptions {
                 jvmTarget = JvmTarget.JVM_11
             }
