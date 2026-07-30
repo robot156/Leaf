@@ -81,8 +81,16 @@ dependencies {
 
     implementation(libs.metrox.android)
     implementation(libs.metrox.viewmodel)
+}
 
-    // KMP 라이브러리 모듈에는 빌드 타입이 없어 debugImplementation 을 쓸 수 없다.
-    // 프리뷰 렌더링용 tooling 은 빌드 타입이 있는 app 에서만 debug 로 넣는다.
-    debugImplementation(libs.androidx.compose.ui.tooling)
+/**
+ * 프리뷰 렌더러는 프리뷰가 선언된 모듈에 있어야 해서 `leaf.kmp.library.compose` 가
+ * 모든 compose KMP 모듈의 androidMain 에 넣는다 (빌드 타입이 없어 debug 한정이 불가능).
+ *
+ * 빌드 타입을 가진 app 에서 release 만 걷어낸다. minify 가 코드는 지워도
+ * ui-tooling 의 `PreviewActivity` 는 매니페스트 병합으로 남는다.
+ */
+// AGP 의 variant 별 configuration 은 afterEvaluate 에 만들어져 named() 로는 못 잡는다.
+configurations.matching { it.name == "releaseRuntimeClasspath" }.configureEach {
+    exclude(group = "androidx.compose.ui", module = "ui-tooling")
 }

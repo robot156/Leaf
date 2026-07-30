@@ -34,5 +34,19 @@ internal fun Project.configureComposeMultiplatform() {
         sourceSets.getByName("commonMain").dependencies {
             implementation(libs.compose.runtime)
         }
+
+        // Android Studio 는 `@Preview` 가 **선언된 모듈**의 클래스패스로 렌더한다.
+        // commonMain 의 프리뷰도 android 타깃을 거치므로 렌더러(ui-tooling)가 그 모듈에 있어야 한다
+        // — ui-tooling-preview 는 어노테이션만 제공한다.
+        //
+        // `com.android.kotlin.multiplatform.library` 는 빌드 타입이 없어 debugImplementation 을
+        // 쓸 수 없다. 그래서 무조건 넣고, 빌드 타입이 있는 app 에서 release 만 걷어낸다.
+        //
+        // androidMain 은 각 모듈의 `android { }` 선언 시점에 생기므로 지연 설정한다.
+        sourceSets.matching { it.name == "androidMain" }.configureEach {
+            dependencies {
+                implementation(libs.androidx.compose.ui.tooling)
+            }
+        }
     }
 }

@@ -195,7 +195,15 @@ Compose 컴파일러 참여가 바뀌고 이 환경에서는 release 빌드(서�
   → `koreanPlatformTextStyle()` expect/actual (iOS 는 `null`).
 - **`String.format` 은 JVM 전용**이라 `padStart` 등으로 바꿔야 한다.
 - **빌드 타입이 없어 `debugImplementation` 을 못 쓴다.** 프리뷰 렌더링용 `ui-tooling` 은
-  빌드 타입이 있는 `app` 에서 `debugImplementation` 으로 넣는다.
+  `leaf.kmp.library.compose` 가 모든 compose KMP 모듈의 `androidMain` 에 무조건 넣고,
+  빌드 타입이 있는 `app` 에서 `releaseRuntimeClasspath` exclude 로 걷어낸다.
+  ~~빌드 타입이 있는 `app` 에서 `debugImplementation` 으로 넣는다.~~
+  → **틀린 결론이었다.** Android Studio 는 `@Preview` 가 *선언된 모듈*의 클래스패스로
+  렌더하는데 `app` 에는 `@Composable` 이 없다. 프리뷰가 있는 `core:designsystem`,
+  `feature:home` 에는 `ui-tooling-preview`(어노테이션)만 있고 렌더러가 없어서
+  전부 `ClassNotFoundException: androidx.compose.ui.tooling.ComposeViewAdapter` 로 깨졌다.
+  release 에서 exclude 가 필요한 이유는 minify 가 코드는 지워도 `ui-tooling` 의
+  `PreviewActivity` 는 매니페스트 병합으로 남기 때문이다.
 - **문자열은 7단계까지 이중 관리**다. feature 들이 아직 `R.string.*`(81곳/23파일)을 쓰므로
   `androidMain/res/values/strings.xml` 에 사본을 두고 컴파일을 유지한다.
   정본은 `commonMain/composeResources/values/strings.xml` — 7단계에서 사본을 삭제한다.
