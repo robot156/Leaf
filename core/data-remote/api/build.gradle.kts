@@ -1,11 +1,19 @@
 plugins {
-    alias(libs.plugins.leaf.jvm)
+    alias(libs.plugins.leaf.kmp.library)
     alias(libs.plugins.leaf.detekt)
 }
 
-dependencies {
-    api(projects.core.common)
+kotlin {
+    android {
+        namespace = "io.github.jean.core.dataremote.api"
+    }
 
-    // Kotlin
-    implementation(libs.kotlin.stdlib)
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.core.common)
+
+            // Kotlin
+            implementation(libs.kotlin.stdlib)
+        }
+    }
 }

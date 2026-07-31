@@ -12,7 +12,14 @@ androidxActivity = "1.13.0"
 androidxComposeBom = "2026.06.01"
 androidxNavigation3 = "1.1.4"
 androidxRoom = "2.8.4"
+androidxSqlite = "2.7.0"             # androidx.sqlite — room 과 버전 라인이 다르다 (2.8.x 없음)
 androidxDatastore = "1.2.1"
+
+# Compose Multiplatform
+# 그룹별로 버전 라인이 갈라져 있다. CMP 릴리스 노트의 조합을 그대로 따라야 한다.
+composeMultiplatform = "1.11.1"      # org.jetbrains.compose.{runtime,ui,foundation,animation,components}
+composeMaterial3 = "1.11.0-alpha07"  # org.jetbrains.compose.material3 — 버전 라인 다름
+jbNavigation3 = "1.1.1"              # org.jetbrains.androidx.navigation3:navigation3-ui (runtime 은 upstream 사용)
 
 # kotlin
 kotlin = "2.4.10"
@@ -45,7 +52,6 @@ detektComposeRule = "0.6.3"
 orbit = "12.0.0"
 
 # ETC
-jetbrainsKotlinJvm = "2.4.10"
 aboutlibraries = "15.0.4"
 zoomable = "2.13.0"
 
@@ -57,17 +63,23 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 # AndroidX Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+# Compose Multiplatform
+# Android variant 는 내부적으로 androidx.compose.* 에 위임하므로(예: org.jetbrains.compose.ui:ui 의
+# androidApiElements 가 androidx.compose.ui:ui 를 의존) 아직 androidx 좌표를 쓰는 모듈과 혼용해도 안전하다.
+compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "composeMultiplatform" }
+compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "composeMultiplatform" }
+compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-animation = { group = "org.jetbrains.compose.animation", name = "animation", version.ref = "composeMultiplatform" }
+compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "composeMaterial3" }
 
 # AndroidX Activity Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 
 # AndroidX Lifecycle
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewModel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidxLifecycle" }
@@ -75,12 +87,17 @@ androidx-lifecycle-savedState = { group = "androidx.lifecycle", name = "lifecycl
 
 # AndroidX Navigation3
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "androidxNavigation3" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "androidxNavigation3" }
+# navigation3-ui 는 androidx 쪽이 ios_x64 조차 없이 android/jvmStubs/linuxx64Stubs 만 내므로
+# JetBrains 포크를 쓴다. 패키지는 androidx.navigation3.ui 그대로라 import 변경은 없다.
+# runtime 은 upstream 이 iOS 를 퍼블리시하므로 그대로 둔다. 버전 라인이 달라 jbNavigation3 를 쓴다.
+jb-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "jbNavigation3" }
 
 # AndroidX Room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
+# KMP 에서는 프레임워크 SQLite 대신 번들 드라이버를 쓴다.
+# (room-ktx 는 iOS 미퍼블리시라 아예 쓰지 않는다)
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidxSqlite" }
 
 # AndroidX DataStore
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
@@ -99,6 +116,7 @@ coil-network-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", 
 
 # KotlinX
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
@@ -112,6 +130,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 # Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
@@ -131,6 +150,7 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-compose-rule = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRule" }
 detekt-gradle-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+compose-gradlePlugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "composeMultiplatform" }
 
 [bundles]
 di = [
@@ -138,13 +158,18 @@ di = [
     "metrox-viewmodel-compose",
     "metrox-android",
 ]
+# metrox-android 는 Android 전용이라 KMP commonMain 에서 쓸 수 없다.
+di-kmp = [
+    "metrox-viewmodel",
+    "metrox-viewmodel-compose",
+]
 coil = [
     "coil-compose",
     "coil-network-ktor3",
 ]
+# 엔진(cio/darwin)은 플랫폼 소스셋에서 각각 넣는다. HttpClient 는 클래스패스에서 엔진을 자동 탐색한다.
 ktor = [
     "ktor-client-core",
-    "ktor-client-cio",
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
     "ktor-client-logging",
@@ -156,11 +181,7 @@ mvi = [
 ]
 androidx-navigation3 = [
     "androidx-navigation3-runtime",
-    "androidx-navigation3-ui",
-]
-androidx-room = [
-    "androidx-room-runtime",
-    "androidx-room-ktx",
+    "jb-navigation3-ui",
 ]
 androidx-lifecycle = [
     "androidx-lifecycle-runtime-compose",
@@ -168,14 +189,12 @@ androidx-lifecycle = [
     "androidx-lifecycle-viewmodel-navigation3",
     "androidx-lifecycle-savedState"
 ]
-detekt = [
-    "detekt-formatting",
-    "detekt-compose-rule",
-    "detekt-gradle-plugin"
-]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -189,14 +208,11 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 # Convention plugins (build-logic)
 leaf-android-application = { id = "leaf.android.application" }
 leaf-android-application-compose = { id = "leaf.android.application.compose" }
-leaf-android-library = { id = "leaf.android.library" }
-leaf-android-library-compose = { id = "leaf.android.library.compose" }
-leaf-android-feature = { id = "leaf.android.feature" }
 leaf-room = { id = "leaf.room" }
 leaf-metro = { id = "leaf.metro" }
 leaf-detekt = { id = "leaf.detekt" }
-leaf-jvm = { id = "leaf.jvm.library" }
+leaf-kmp-library = { id = "leaf.kmp.library" }
+leaf-kmp-library-compose = { id = "leaf.kmp.library.compose" }
+leaf-kmp-feature = { id = "leaf.kmp.feature" }
 leaf-module-generator = { id = "leaf.module.generator" }
 
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

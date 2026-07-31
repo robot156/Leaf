@@ -1,24 +1,40 @@
 plugins {
-    alias(libs.plugins.leaf.android.library)
+    alias(libs.plugins.leaf.kmp.library)
     alias(libs.plugins.leaf.metro)
     alias(libs.plugins.leaf.detekt)
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "io.github.jean.core.dataremote"
-}
+kotlin {
+    android {
+        namespace = "io.github.jean.core.dataremote"
+    }
 
-dependencies {
-    api(projects.core.dataRemote.api)
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.core.dataRemote.api)
 
-    implementation(projects.core.common)
+            implementation(projects.core.common)
 
-    // Kotlin
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines)
-    implementation(libs.kotlinx.serialization.json)
+            // Kotlin
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.kotlinx.coroutines)
+            implementation(libs.kotlinx.serialization.json)
 
-    // Ktor
-    implementation(libs.bundles.ktor)
+            // Ktor — 엔진은 플랫폼 소스셋에서 넣는다
+            implementation(libs.bundles.ktor)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+    }
 }

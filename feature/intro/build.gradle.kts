@@ -1,12 +1,15 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "io.github.jean.feature.intro"
-    resourcePrefix = "intro_"
-}
+kotlin {
+    android {
+        namespace = "io.github.jean.feature.intro"
+    }
 
-dependencies {
-    implementation(libs.kotlinx.serialization.json)
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.serialization.json)
+        }
+    }
 }

@@ -48,3 +48,6 @@ include(":feature:setting")
 include(":feature:setting-theme")
 include(":feature:setting-license")
 include(":feature:image-viewer")
+
+// iOS 프레임워크 진입점. Xcode 프로젝트는 iosApp/ 에 있다.
+include(":app-ios")

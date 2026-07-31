@@ -1,12 +1,15 @@
 plugins {
-    alias(libs.plugins.leaf.android.feature)
+    alias(libs.plugins.leaf.kmp.feature)
 }
 
-android {
-    namespace = "io.github.jean.feature.imageviewer"
-    resourcePrefix = "image_viewer_"
-}
+kotlin {
+    android {
+        namespace = "io.github.jean.feature.imageviewer"
+    }
 
-dependencies {
-    implementation(libs.image.zoomable)
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.image.zoomable)
+        }
+    }
 }

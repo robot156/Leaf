@@ -9,6 +9,7 @@ dependencies {
     compileOnly(libs.room.gradlePlugin)
     compileOnly(libs.detekt.gradle.plugin)
     compileOnly(libs.kotlin.compose.compiler.extension)
+    compileOnly(libs.compose.gradlePlugin)
     compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
@@ -22,18 +23,6 @@ gradlePlugin {
             id = "leaf.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
-        register("androidLibrary") {
-            id = "leaf.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
-        }
-        register("androidLibraryCompose") {
-            id = "leaf.android.library.compose"
-            implementationClass = "AndroidLibraryComposeConventionPlugin"
-        }
-        register("androidFeatureConvention") {
-            id = "leaf.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
-        }
         register("room") {
             id = "leaf.room"
             implementationClass = "RoomConventionPlugin"
@@ -46,9 +35,17 @@ gradlePlugin {
             id = "leaf.detekt"
             implementationClass = "DetektConventionPlugin"
         }
-        register("jvmLibrary") {
-            id = "leaf.jvm.library"
-            implementationClass = "JvmLibraryPlugin"
+        register("kmpLibrary") {
+            id = "leaf.kmp.library"
+            implementationClass = "KmpLibraryConventionPlugin"
+        }
+        register("kmpLibraryCompose") {
+            id = "leaf.kmp.library.compose"
+            implementationClass = "KmpLibraryComposeConventionPlugin"
+        }
+        register("kmpFeature") {
+            id = "leaf.kmp.feature"
+            implementationClass = "KmpFeatureConventionPlugin"
         }
         register("moduleGenerator") {
             id = "leaf.module.generator"
