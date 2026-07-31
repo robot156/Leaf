@@ -13,7 +13,7 @@ object LeafConfig {
     // Calendar-based versioning: <year>.<month>.<release>
     // e.g. 2026.07.00 — the release counter increments per deployment within a month.
     private const val VERSION_YEAR = 2026
-    private const val VERSION_MONTH = 7
+    private const val VERSION_MONTH = 8
     private const val VERSION_RELEASE = 0
 
     val VERSION_NAME = "%d.%02d.%02d".format(VERSION_YEAR, VERSION_MONTH, VERSION_RELEASE)
